@@ -1,0 +1,201 @@
+id,label,subject,text
+1,account_access,Can't log in password reset email not arriving,I clicked forgot password and submitted my email address but I'm not receiving the reset email. I can't access my account.
+2,account_access,Account locked after failed login attempts,I tried to log in with an incorrect password a few times and now my account is locked. What do I do?
+3,account_access,Two-factor authentication code not working,I set up 2FA but the app keeps generating invalid codes that your system rejects even though the timing is correct.
+4,account_access,Login page showing blank,The login page loads but the form fields don't appear. I just see a blank white screen where the login form should be.
+5,account_access,OAuth login not working,I tried to log in using Google but got an error during the authorization process.
+6,account_access,Session timeout too quick,My session times out after just 5 minutes of inactivity. That's too short I need longer sessions.
+7,account_access,Forgot username can't retrieve,I forgot my username and the system won't let me recover it. I only remember my email.
+8,account_access,New account creation fails,When I try to create a new account it says an error occurred but doesn't tell me what went wrong.
+9,account_access,Email not verified stuck,My account requires email verification but the verification email never arrived. I'm stuck in limbo.
+10,account_access,Password change not saving,I tried to change my password but after entering the new password I get an error and it doesn't save.
+11,account_access,Third-party account not linking,I tried to link my Google account but the linking process fails at the final step.
+12,account_access,Account deactivation irreversible,I deactivated my account but changed my mind. The system won't let me reactivate it.
+13,account_access,Login from new device blocked,When I try logging in from a new device the system blocks it even though I verify it's me.
+14,account_access,Legacy account no longer works,My old account stopped working after your migration. I can't access it with my old password and username.
+15,account_access,Biometric login not working,The fingerprint login on iOS isn't working even though I set it up correctly.
+16,account_access,Authenticator app out of sync,My Google Authenticator codes don't match what your system expects even though my phone time is correct.
+17,account_access,Account showing in use elsewhere,It says my account is already logged in somewhere else but I only have it open on this device.
+18,account_access,Username contains restricted characters,I want to create an account with special characters in my username but the system won't allow them.
+19,account_access,Age verification blocking account,The age verification system is refusing my valid government ID. I'm definitely old enough.
+20,account_access,Payment info required for free account,You're asking for payment information even though I only want the free tier. Why do you need my card?
+21,account_access,Corporate email not recognized,When I use my company email to sign up you say it's not a valid email format even though it is.
+22,account_access,Nickname containing profanity rejected,I chose a username that apparently your system thinks is inappropriate but it's not. The filter is too strict.
+23,account_access,Account impersonation suspected,You've flagged my account as potential fraud and suspended it even though it's legitimate. I can't log back in.
+24,account_access,IP address blocking too aggressive,You blocked my account because of suspicious login from a different IP but I was traveling it was me.
+25,account_access,Backup authentication method missing,I set up a backup authentication method but it's not showing up when I need to use it.
+26,account_access,Single sign-on setup failed,I tried to set up single sign-on with my company identity provider but it won't connect properly.
+27,account_access,Team member can't join workspace,I sent an invite to a colleague but they say they never received it and can't find the workspace.
+28,account_access,Admin permission lost mysteriously,I was an admin on my workspace but suddenly lost access to admin functions without anyone removing me.
+29,account_access,Account merge didn't complete,I tried to merge two accounts and the process seemed to complete but my data didn't consolidate properly.
+30,account_access,Recovery codes not working,I saved my backup recovery codes but when I try to use them the system rejects them as invalid.
+31,account_access,Session persists after logout,After I log out I can still access my account by hitting the back button and refreshing. The session isn't actually cleared.
+32,account_access,Wrong user profile loaded,After login a different user's profile and data are loaded into my account session.
+33,account_access,Password history preventing new password,Your password history requirements won't let me reuse any old passwords but I'm running out of ideas and they keep expire.
+34,account_access,Temporary password never expires,You sent me a temporary password to reset but there's no way to set it up. I'm stuck with the temp password.
+35,account_access,CAPTCHA triggering too frequently,After a few login attempts you're making me solve CAPTCHAs constantly. It's excessive.
+36,account_access,Accessibility feature breaking login,The screen reader mode I use is incompatible with your login form preventing me from logging in.
+37,account_access,Magic link expired too quickly,The magic link password reset link you emailed me expired in 15 minutes. I didn't see the email in time.
+38,account_access,Concurrent session limit enforced,I tried to log in on my laptop and phone at the same time but you only allow one session so I was logged out.
+39,account_access,Account activity showing impossible location,My account activity log shows logins from a country I've never visited. Is my account compromised?
+40,account_access,Notification of login attempt not received,You're supposed to email me when someone logs into my account but I'm not getting those notifications.
+41,account_access,API token generation not working,When I try to generate an API token for my account the button does nothing.
+42,account_access,API key rotation too complicated,The process to rotate my API keys is confusing and undocumented. I'm not sure if I'm doing it right.
+43,account_access,Service account creation missing,I need to create a service account but I don't see that option in my account settings.
+44,account_access,Permissions inheritance broken,When I create a new resource it's not inheriting the expected default permissions from its parent.
+45,account_access,Admin approval stuck indefinitely,I requested elevated permissions but my admin approval request has been pending for 3 weeks with no response.
+46,account_access,Offboarding process incomplete,A former team member's account was supposedly deleted but we can still see their data and logs.
+47,account_access,Group membership sync failing,Team members added to our corporate directory aren't automatically getting access. The sync isn't working.
+48,account_access,Identity provider certificate expired,Our SSO integration stopped working after the certificate expired. Why wasn't I warned about this?
+49,account_access,Audit log truncation too aggressive,Your system is automatically deleting audit logs after 30 days but we need 90 days for compliance.
+50,account_access,SOC 2 access requirements too permissive,Your security requirements for sensitive operations allow too many people access. It doesn't follow least-privilege.
+51,account_access,Shared account not recommended warning missing,I created a shared account for the team but there was no warning that shared accounts are security risks.
+52,account_access,Cross-tenant data access possible,A security audit found that users from one organization can access data from another organization. This is a critical flaw.
+53,account_access,Password strength requirements unclear,You rejected my password as too weak but you never clearly specify what makes a password acceptable.
+54,account_access,Session fixation vulnerability warning,I was warned by security researcher that your session handling has fixation vulnerabilities. Is this being fixed?
+55,account_access,Cross-site request forgery lacking protection,Security audit found that CSRF tokens aren't implemented. This is a critical vulnerability.
+56,account_access,Two-factor SMS not arriving,2FA SMS texts aren't arriving so I can't complete login.
+57,account_access,Backup codes not valid,My backup 2FA codes are being rejected as invalid.
+58,account_access,Biometric auth fails randomly,Face ID or fingerprint auth works sometimes but not others.
+59,account_access,Biometric data lost after update,After app update my biometric authentication stopped working.
+60,account_access,Face ID false rejection,Face ID rejects legitimate attempts to unlock.
+61,account_access,Fingerprint sensor flaky,Fingerprint sensor is unreliable and inconsistent.
+62,account_access,PIN entry too sensitive,PIN entry requires too many attempts before locking.
+63,account_access,Pattern unlock forgotten,Gesture/pattern unlock options available but I forgot my pattern.
+64,account_access,Voice authentication unreliable,Voice recognition authentication fails too often.
+65,account_access,Iris scan not working,Iris scan authentication isn't working on my device.
+66,account_access,Multi-factor delays excessive,Multi-factor authentication is taking too long on each login.
+67,account_access,MFA requirement disabled,Multi-factor authentication stopped working after account change.
+68,account_access,Recovery email abandoned,Can't recover account because recovery email is old and abandoned.
+69,account_access,Recovery phone old,Recovery phone number is outdated and no longer mine.
+70,account_access,Security questions too obvious,Security questions are easy to guess.
+71,account_access,Recovery questions changed,Security questions can be changed by attackers.
+72,account_access,Account takeover suspected,I suspect my account was compromised by someone else.
+73,account_access,Unusual login activity,Seeing login activity from locations I've never been.
+74,account_access,Session hijacking feared,I think someone hijacked my session and accessed my account.
+75,account_access,Cookie theft vulnerability,Session cookies aren't secure and can be stolen.
+76,account_access,HTTPS not enforced,The site allows HTTP connections over HTTPS.
+77,account_access,Certificate pinning missing,HTTPS certificate pinning not implemented.
+78,account_access,Man in the middle possible,Unencrypted Wi-Fi usage allows man in the middle attacks.
+79,account_access,Device trust mechanism missing,Can't mark trusted devices to skip 2FA.
+80,account_access,Suspicious activity blocks,Account blocks triggered incorrectly by false positives.
+81,account_access,IP restriction causing problems,IP whitelist is blocking legitimate connections.
+82,account_access,Geolocation blocking too strict,Geographic restrictions on account access are too strict.
+83,account_access,VPN not working with account,Using VPN breaks my account access.
+84,account_access,Proxy detection breaking auth,Proxy usage is being detected and blocking authentication.
+85,account_access,Tor access blocked,Access from Tor network is being blocked.
+86,account_access,Privacy protection failing,Privacy protection features are failing to protect.
+87,account_access,Location tracking unwanted,Location tracking is happening and can't be disabled.
+88,account_access,Metadata collection excessive,Excessive metadata being collected about activity.
+89,account_access,Data collection scope creeping,Scope of data collection keeps expanding.
+90,account_access,Preference changes not persisted,Account preferences aren't being saved properly.
+91,account_access,Profile sync delayed,Profile changes aren't syncing across devices.
+92,account_access,Cross-device session disconnect,Logging in on one device logs me out of others.
+93,account_access,Session timeout unpredictable,Session timeout happens at random intervals.
+94,account_access,Inactivity timeout too short,Inactivity timeout is set way too short.
+95,account_access,Remember me not working,Remember me checkbox isn't remembering the device.
+96,account_access,Cookie persistence broken,Persistent cookies aren't persisting after browser close.
+97,account_access,Third-party login account link lost,My Google account link disappeared after account migration.
+98,account_access,Single sign-on broken after update,SSO stopped working after service update.
+99,account_access,OpenID provider changed,Third-party OpenID provider changed causing auth failure.
+100,account_access,OAuth consent revoked,User revoked OAuth consent causing account access loss.
+101,account_access,SAML assertion validation failing,SAML authentication failing due to assertion validation.
+102,account_access,JWT token too short-lived,JWT tokens expire too quickly requiring frequent reauth.
+103,account_access,Bearer token handling wrong,Bearer token handling in headers is broken.
+104,account_access,API authentication header case,API authentication headers are case-sensitive causing failures.
+105,account_access,Basic auth encoding issue,Basic authentication encoding isn't handling special characters.
+106,account_access,Digest auth realm mismatch,Digest authentication failing due to realm mismatch.
+107,account_access,OAuth scope too permissive,OAuth scopes being requested are too broad.
+108,account_access,Consent framework missing,No way to revoke individual permission scopes.
+109,account_access,Token refresh token expired,Refresh token expired so can't get new access token.
+110,account_access,Token revocation delayed,Revoking tokens takes too long to be effective.
+111,account_access,Access token reuse possible,Tokens can be reused allowing account takeover.
+112,account_access,Token storage insecure,Tokens stored in insecure location like localStorage.
+113,account_access,XSS stealing tokens,XSS vulnerability allowing theft of authentication tokens.
+114,account_access,Logout not clearing tokens,Logging out doesn't properly invalidate tokens.
+115,account_access,Session hijacking via logout,Logout process is vulnerable to hijacking.
+116,account_access,Concurrent login conflicts,Multiple concurrent logins cause session conflicts.
+117,account_access,Login attempt throttling weak,Brute force protection is too weak.
+118,account_access,Account recovery vulnerable,Account recovery process is vulnerable to attacks.
+119,account_access,Username display in profile,Show users how their username appears to other users for verification.
+120,account_access,Account privacy settings,Let users control what information is visible in their public profile.
+121,account_access,Activity status visibility,Control whether others can see if I'm currently active or idle.
+122,account_access,Location privacy,Control whether location data is shared or displayed to other users.
+123,account_access,Search visibility,Allow users to opt out of being found in search results.
+124,account_access,Profile customization,Let users customize their profile page with bio avatar and custom content.
+125,account_access,Dark mode profile,Apply dark mode styling to user profile pages as well as main app.
+126,account_access,Custom profile themes,Let users choose from profile themes or create custom ones.
+127,account_access,Profile preview before publishing,Preview how your profile looks before making it public.
+128,account_access,Profile change history,Show what was recently changed on a profile for transparency.
+129,account_access,Account export,Let users export all their data as a backup or for data portability.
+130,account_access,Account import,Allow bulk importing of data from previous accounts or other services.
+131,account_access,Data deletion request,Provide easy way to permanently delete all personal data upon request.
+132,account_access,GDPR compliance tools,Provide tools for GDPR compliance including data access and deletion requests.
+133,account_access,CCPA compliance tools,Support California Consumer Privacy Act compliance features.
+134,account_access,Right to be forgotten,Delete all traces of a user account when requested.
+135,account_access,Data portability export,Export account data in a standard portable format like JSON or CSV.
+136,account_access,Notification center,Centralized place to view all notifications organized by type and date.
+137,account_access,Notification preferences per type,Control which types of notifications I receive and how desktop email SMS etc.
+138,account_access,Quiet hours scheduling,Set times when notifications are muted like during sleep hours.
+139,account_access,Do not disturb mode,Temporarily mute all notifications until I turn it back on.
+140,account_access,Notification digest frequency,Choose how often I get notification digests hourly daily weekly etc.
+141,account_access,Notification sound customization,Set different sounds for different notification types.
+142,account_access,Badge count hiding,Hide notification badge counts if they're stressing you out.
+143,account_access,Read receipt control,Choose whether to send read receipts when I open messages.
+144,account_access,Typing indicator toggle,Control whether others see when I'm typing.
+145,account_access,Last seen hidden,Hide your last active time from other users for privacy.
+146,account_access,Online status toggle,Control whether your online status is visible to others.
+147,account_access,Block user feature,Block specific users from contacting or viewing your profile.
+148,account_access,Report user abuse,Report inappropriate behavior for moderator review.
+149,account_access,Ignore list,Silently ignore messages from specific users without blocking them.
+150,account_access,Favorites list,Maintain a list of favorite users or contacts for quick access.
+151,account_access,User search,Search for other users by username or other identifying info.
+152,account_access,People discovery,Discover and connect with people with similar interests.
+153,account_access,Recommendation algorithm,Recommend people to follow based on interests and connections.
+154,account_access,Connection requests,Send and receive connection requests before following or adding someone.
+155,account_access,Accept follow requests,Require approval before someone can follow your account.
+156,account_access,Public vs private account,Choose whether your account and content is publicly visible or private.
+157,account_access,Follower list,View a list of all your followers and unfollow if needed.
+158,account_access,Following list,View everyone you follow and unfollow accounts.
+159,account_access,Mutual connection highlight,Indicate when you follow each other mutually.
+160,account_access,Friend suggestions,Get suggestions for new friends based on mutual connections.
+161,account_access,Contact import from phone,Import contacts from phone to find friends in the service.
+162,account_access,Calendar invitation feature,Send calendar invites for events or meetings through the platform.
+163,account_access,Birthday reminders,Automatically celebrate and remind you of friend birthdays.
+164,account_access,Favorite emoji reaction,Let me set my favorite emoji for quick reactions without typing.
+165,account_access,Custom stickers and emojis,Let creators upload custom emoji and sticker packs.
+166,account_access,Reaction summary,Show aggregated reactions to messages to see the group sentiment.
+167,account_access,Message editing,Let me edit messages after I send them for typos or corrections.
+168,account_access,Message deletion,Delete messages so they're no longer visible even if already read.
+169,account_access,Can't access account on new device,I switched phones and now I can't log into my account on the new device.
+170,account_access,Account restricted without explanation,My account has been restricted but I wasn't told why or what I did wrong.
+171,account_access,Email change unverified,I changed my email but the verification email for the new email never arrived.
+172,account_access,Phone number not updating,I tried to update my phone number for 2FA but the change won't save.
+173,account_access,Backup email not working,My backup email for account recovery isn't being recognized.
+174,account_access,Two devices logged in same time issue,I can't be logged in on two devices at the same time even though I need to be.
+175,account_access,Automatic logout during work,I get automatically logged out while I'm actively working which is frustrating.
+176,account_access,Password reset link malformed,The password reset link in the email has special characters that break the URL.
+177,account_access,Account recovery too strict,The account recovery process requires information I don't have anymore.
+178,account_access,Login credentials not saved,Browser isn't remembering my login credentials even though I allow it to.
+179,account_access,Keyboard shortcuts not working in login,Keyboard shortcuts I use elsewhere don't work in the login form.
+180,account_access,Mobile login truncated,On mobile the login form doesn't fit properly and buttons are cut off.
+181,account_access,Login page slow to load,The login page takes forever to load making the authentication process painful.
+182,account_access,Login session state lost,If I navigate away from the login page during setup the state is lost.
+183,account_access,Account activation link expired,The activation link in the signup email expired before I clicked it.
+184,account_access,Username case sensitivity issue,The username is case-sensitive but I can't remember the exact case I chose.
+185,account_access,Email already registered ambiguity,The error message says my email is already registered but I can't log in.
+186,account_access,Duplicate accounts created,I accidentally created two accounts and now I have duplicates I can't merge.
+187,account_access,Account suspended for no reason,My account was suspended but I haven't violated any terms.
+188,account_access,Appeal process for suspension unclear,I can't figure out how to appeal my account suspension.
+189,account_access,Account reactivation process broken,Even after resolving the issue I can't reactivate my account.
+190,account_access,Deletion request not processed,I requested account deletion weeks ago but the account still exists.
+191,account_access,Data still accessible after deletion,After deletion my data is somehow still accessible to me.
+192,account_access,No confirmation before deletion,The system let me delete my account without asking for confirmation.
+193,account_access,Deletion rollback unavailable,I accidentally deleted my account and there's no way to undo it.
+194,account_access,Personal data not fully deleted,The system says my account was deleted but my personal data is still there.
+195,account_access,Download data before deletion failing,The export data feature doesn't work so I can't back up before deleting.
+196,account_access,Account transfer unavailable,I can't transfer my account to another email address.
+197,account_access,Family account sharing broken,Family account sharing isn't working properly so my family can't access their accounts.
+198,account_access,Guest access permissions wrong,Guest access isn't respecting the permission levels I set.
+199,account_access,Invite link expired immediately,Invite links I send expire too quickly before people can use them.
+200,account_access,Accept invite fails with email,Accepting an invite fails if my email format is slightly different.

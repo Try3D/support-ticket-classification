@@ -1,0 +1,201 @@
+id,label,subject,text
+1,billing,Charged twice this month,My credit card statement shows two charges of $49.99 from your company on March 1st. I'm on a monthly plan so there should only be one. Please refund the duplicate.
+2,billing,Invoice not matching quoted price,My invoice for March says $299/month but I was quoted $249/month during signup. I have the confirmation email with the original price. Can you correct this?
+3,billing,Unable to update payment method,When I try to add a new credit card in billing settings the form just reloads after I submit. My old card is expiring next week so I need this fixed urgently.
+4,billing,Cancellation not processed still being charged,I cancelled my subscription on February 15th and received a confirmation email but I was still charged on March 1st. Please process the refund and confirm cancellation.
+5,billing,Need VAT invoice for company records,Our accounting department needs a proper VAT invoice with our company's VAT number included. The invoices you generate don't have a field for this. How do I get one?
+6,billing,Promo code not applied at checkout,I entered the promo code SAVE20 at checkout and it said it was applied but the final charge on my card was full price. Please apply the 20% discount or refund the difference.
+7,billing,Unexpected charge on my account,I see a charge of $9.99 labeled 'Add-on Feature' on my bill but I never purchased any add-ons. Can you tell me what this is for and remove it if it's an error?
+8,billing,Annual plan refund request,I upgraded to the annual plan three days ago but it's not the right fit. I'd like to downgrade back to monthly and get a prorated refund for the remaining months.
+9,billing,Payment declined but I was still charged,I tried to pay my invoice and got a 'payment declined' message. However my bank shows the $89 was actually debited. I have a screenshot of both the error and bank statement.
+10,billing,Subscription plan showing wrong tier,I upgraded from Starter to Pro last week and the payment went through but my account still shows Starter features and limits. My invoice shows the Pro charge.
+11,billing,Request for billing history download,I need all billing history from 2023 and 2024 for our annual audit. The portal only shows the last 6 months. Can you export or email the full history as PDF?
+12,billing,Charged for team seats I removed,I removed three team members from our account on March 1st but the March invoice still includes 8 seats instead of 5. Please adjust the billing for next month and credit back.
+13,billing,Free trial ended early,My 14-day free trial was supposed to end on March 20th but you charged my card on March 10th. I'd like the charge reversed and my trial extended.
+14,billing,Need to change billing email address,Our company restructured and I need to change the billing contact email from john@oldcompany.com to finance@newcompany.com. Who do I contact for this?
+15,billing,Double billing on annual renewal,We were charged twice for our annual plan renewal this month. One charge on the 1st and another on the 15th. Please investigate and issue a refund for the duplicate.
+16,billing,Currency conversion error on invoice,I'm located in Canada but my invoice shows USD pricing even though I set my account to CAD. The exchange rate applied seems incorrect. Please correct the billing.
+17,billing,Discount code expired without notice,I had a 30% discount code that was supposed to be valid through March but it stopped working mid-month. No notification was sent. Can you reapply it?
+18,billing,Payment method on file keeps declining,My credit card on file keeps getting declined even though I know it's valid. I've updated it multiple times but the system won't accept it. Getting frustrated.
+19,billing,Invoice missing itemized breakdown,My invoices no longer show a breakdown of what I'm being charged for. They just show a total. I need itemization for accounting purposes.
+20,billing,Subscription auto-renewal without confirmation,I expected to be asked to confirm my subscription renewal but I was just automatically charged. I didn't consent to this. What's your policy?
+21,billing,Refund still pending after two weeks,I requested a refund on March 10th and it shows as processed on your end but hasn't appeared in my bank account yet. Can you check the status?
+22,billing,Tax calculation seems wrong,I'm paying sales tax on top of my subscription but looking at your terms I shouldn't be charged tax in my state. Please review my account.
+23,billing,Previous overpayment not credited,I overpaid my account by $50 last month and was told it would be credited toward my next invoice. It's not showing on this month's bill.
+24,billing,Can't download past invoices,I need invoices from 2023 for tax purposes but the download option only shows invoices from the last 3 months. How do I access older invoices?
+25,billing,Wrong billing address on invoice,The invoice is being sent to an old company address that I updated three months ago. I've updated my profile but invoices still go to the wrong place.
+26,billing,Charged monthly instead of annual rate,I selected the annual payment plan at signup but my recent charges appear to be at the monthly rate. I should be paying less per month on annual.
+27,billing,Payment failed but trying again charged me,My first payment attempt failed so I tried again but it turns out both went through. Now I have two charges on my account this month.
+28,billing,Conflicting information about pricing,Your website shows one price but my invoice shows another. The support page quotes $99/month but I'm being charged $119/month.
+29,billing,Invoice issued after cancellation,I cancelled my subscription and received confirmation but you still issued an invoice for the next month. I should not be charged after cancellation.
+30,billing,Family plan billing issues,I upgraded to the family plan but I'm still being charged for individual accounts separately instead of one family plan charge.
+31,billing,Setup fee not explained,There's a $50 'setup fee' on my first invoice that wasn't mentioned during signup. What is this charge for and why wasn't I informed?
+32,billing,Conflicting currency on invoice,My account is set to USD but the invoice shows amounts in EUR. This is confusing and the conversion seems off from the actual exchange rate.
+33,billing,Bulk discount not applied,We were promised a 20% bulk discount for ordering 5 licenses but only received a 10% discount. Please correct the invoice.
+34,billing,Invoice timestamp incorrect,The invoice shows a date from last month but was issued today. This is causing issues with our accounting system that records by date.
+35,billing,Subscription renewal without email reminder,I didn't receive any reminder that my subscription was about to renew. I got charged but had no heads up or chance to cancel.
+36,billing,Different price quoted vs charged,During the sales call I was quoted $199/month but my first invoice is $249/month. The salesman promised the lower rate. Can you honor that?
+37,billing,Recurring charge not authorized,There's a recurring charge on my account that I never authorized. It started appearing 3 months ago and I'm not sure what it's for.
+38,billing,Invoice calculation error with addons,I have 3 add-ons but the invoice seems to be multiplying the cost instead of adding them. The math doesn't add up.
+39,billing,Student discount not applied,I provided my student email at signup and was told I'd get a 50% discount but my invoices show full price. Student discount never applied.
+40,billing,Charge from unknown source,I see a recurring charge labeled with a company name I don't recognize. I definitely didn't sign up with them. Is this fraud?
+41,billing,Late fee charged for on-time payment,I paid my invoice on the due date but you still charged me a late fee. The payment was submitted before midnight on the deadline.
+42,billing,Refund bounced back to my bank,I received my refund but my bank sent it back as undeliverable. Now it's stuck and I need help getting it reissued to a valid account.
+43,billing,Promotional offer not honored,I was promised 3 months free when I signed up but you're charging me for month 1. The promotion should cover the first 3 months.
+44,billing,Pricing page shows different rate,The current pricing page shows $79/month but I'm being charged $99/month. Was there a price increase? When did that happen?
+45,billing,Invoice won't load in PDF viewer,I downloaded my invoice but the PDF is corrupted and won't open. I need to view it for record-keeping purposes.
+46,billing,Multiple refunds issued,I requested one refund but I see three separate refund transactions from you in my bank account. I'm confused about what I actually owe.
+47,billing,Contract price locked vs new price,I signed a contract for $150/month but you're trying to charge me $200/month as the 'new market rate'. Isn't my rate locked in?
+48,billing,Billing cycle mismatch with bank,My bank shows the charge on the 15th but your invoice says it was processed on the 10th. Which date is correct?
+49,billing,Yearly commitment charge appears monthly,I paid once for a yearly commitment but I'm being charged every month. You're overcharging me for the service.
+50,billing,Invoice email going to wrong address,Invoices are going to a distribution list email instead of my personal email. I never added that email to the account.
+51,billing,Monthly charge but billed annually,I'm being charged monthly but my agreement states annual billing. Why am I seeing 12 separate monthly charges?
+52,billing,Volume discount not calculated correctly,We purchased more than the threshold for a volume discount but you're charging us the lower quantity rate.
+53,billing,Enterprise contract terms ignored,Our enterprise contract specifies custom pricing but you're using standard rates instead.
+54,billing,Pricing changes applied retroactively,You changed your pricing model and applied it to our previous invoices without notice or consent.
+55,billing,Usage-based billing calculation incorrect,Our usage-based charges don't match our actual usage. The calculation seems off.
+56,billing,Overage charges for normal usage,You're charging us overage fees even though our usage is within our plan limits.
+57,billing,Commitment discount not honored,We committed to a certain spending level for a discount but you're not applying it.
+58,billing,Partner discount code invalid,The reseller gave us a discount code but when I try to apply it the system says it's invalid or expired.
+59,billing,Nonprofit pricing application rejected,We're a registered nonprofit and should qualify for nonprofit pricing but your system rejected our application.
+60,billing,Educational discount terms not met,The educational discount requires something we can't provide but your support won't suggest an alternative.
+61,billing,Loyalty discount for long-term customer,We've been customers for 5 years but new customers get better prices. Is there a loyalty discount?
+62,billing,Pricing page vs actual price discrepancy,The website lists prices that are lower than what I'm actually being charged. What gives?
+63,billing,Trial ending surprise charge,My free trial ended and you immediately charged without sending a reminder or confirmation.
+64,billing,Cancellation doesn't stop billing,I cancelled my subscription but charges keep appearing on my card.
+65,billing,Billing still active after account deletion,I deleted my account but I'm still being charged. The deletion didn't stop billing.
+66,billing,Prorated billing calculation wrong,When I changed plans mid-month the proration calculation charged me more than it should have.
+67,billing,Grace period charges applied incorrectly,You charged me even though I have a 30-day grace period in my contract.
+68,billing,Multiple currencies showing on invoice,My invoice is a mix of currencies instead of being converted to my home currency.
+69,billing,Exchange rate applied day was wrong,You used the exchange rate from the wrong day resulting in an unfavorable rate for me.
+70,billing,Bank fees not covered by you,You passed through bank wire transfer fees to me even though you initiated the transaction.
+71,billing,Payment method removed without warning,You removed my payment method from file without notifying me why.
+72,billing,Billing cycle changed without consent,You moved my billing cycle to a different date without asking. I'm confused about when I'm charged now.
+73,billing,Invoice formatting making it unclear,Your invoices are confusing and don't clearly break down what each charge is for.
+74,billing,Duplicate line items on invoice,I see the same service listed twice on my invoice so I'm being double-charged for one thing.
+75,billing,Invoice total doesn't match line items,The line items add up to one total but the invoice shows a different total. The math doesn't work out.
+76,billing,Tax line item seems arbitrary,There's a tax charge on my invoice but it's not clear what the tax rate is or why it applies.
+77,billing,Service credit not applied,We were told we'd receive a service credit for the outage but it doesn't appear on our next invoice.
+78,billing,Goodwill credit rejected,We requested a credit for our inconvenience but support denied the request without explanation.
+79,billing,Compensation not meeting SLA terms,We were breached SLA but the automatic compensation is way below what the contract specifies.
+80,billing,Credits expiring too quickly,Service credits you issued have a 30-day expiration period. I can't use them all in that timeframe.
+81,billing,Credit not applied to new purchases,I have unused credits from a refund but when I make a new purchase it's being charged instead of using the credit.
+82,billing,Partial payment not accepted,When I tried to make a payment for part of my invoice you wouldn't accept it.
+83,billing,Payment plan request denied,I asked to set up a payment plan for a large invoice but was told it's not an option.
+84,billing,Finance charge added to account,I'm being charged a finance charge or late fee even though I didn't miss a payment.
+85,billing,Collection calls from third party,My account was sent to collections even though I've been disputing the charge.
+86,billing,Billing support unresponsive,I've emailed billing support multiple times with questions but I keep getting automated responses no real help.
+87,billing,Tier change billing issue,When I upgraded tiers I was charged for both tiers for the entire month instead of a proration.
+88,billing,Downgrade effective date ignored,I requested to downgrade on March 15th but you didn't apply it until April 1st and charged full price for March.
+89,billing,Special pricing agreement not documented,We have a special deal but nothing is in writing so when you changed staff it was forgotten.
+90,billing,Negotiated discount forgotten after renewal,You gave us a discount for the first year but it disappeared on renewal even though we discussed keeping it.
+91,billing,Shipping charges bundled without clarity,Shipping costs are bundled into the product price making it hard to see the actual charge.
+92,billing,Tax treatment unclear for services,It's unclear whether your services are taxable in our jurisdiction and you're treating it inconsistently.
+93,billing,Invoice due date calculation wrong,The invoice shows a due date that's actually in the past when I receive it.
+94,billing,Late payment interest compounding incorrectly,If a payment is late you're charging interest that seems to be compounding more than it should.
+95,billing,Billing consolidation not working,We have multiple accounts and requested to consolidate billing onto one invoice but it didn't happen.
+96,billing,Department cost allocation impossible,Our finance department needs to allocate costs to different departments but your billing doesn't support that.
+97,billing,Vendor portal not showing all charges,The vendor portal you provided doesn't show all the charges from our account making reconciliation impossible.
+98,billing,Invoice delivery inconsistent,Some invoices arrive via email others appear in the portal others not at all.
+99,billing,Detailed usage data not available,I need detailed hour-by-hour usage data to reconcile charges but you only provide monthly summaries.
+100,billing,Billing metric definition unclear,It's not clear exactly what metrics you're using to calculate charges.
+101,billing,Charge timing unpredictable,Sometimes I'm charged at the start of the month sometimes mid-month never consistent.
+102,billing,Billing under old company name,I merged with another company and changed my registered name but your billing still shows the old name.
+103,billing,Multiple business entities one invoice,I have separate legal entities but you're combining them on one invoice which violates our accounting rules.
+104,billing,Invoice issued before service delivery,You invoiced me for service before it was actually provided which breaks our payment terms.
+105,billing,Service not invoiced until months later,Other charges appear immediately but some services took months to show up on an invoice.
+106,billing,Locked into old pricing after contract ended,My contract ended but you're still charging the old rate. New customers get better pricing. Can you update to current rates?
+107,billing,Service downtime not credited,You had a 4-hour outage last month but no service credits were issued. I was down during business hours.
+108,billing,Cancellation fees charged,There was a large cancellation fee when I tried to downgrade. The contract didn't clearly state this.
+109,billing,Minimum commitment charge even after paying,I paid off my minimum commitment but you still charged me the same amount next month.
+110,billing,Taxes calculated on discounted price,Tax was applied to my original price not the discounted price I should have paid.
+111,billing,Service credit expiration too short,The service credit you issued expires in 15 days. That's not enough time to use it.
+112,billing,Rebate application never happened,You promised a rebate upon signing but it never appeared on my invoice.
+113,billing,Bulk discount tiering unclear,You have volume discounts but the tiers are confusing and I'm not sure which applies to me.
+114,billing,Price guarantee not honored,My price guarantee clause isn't being respected and you're trying to raise rates.
+115,billing,Seat licensing confusing,It's unclear if I'm paying per named user or concurrent user or something else.
+116,billing,License activation problem,I purchased licenses but can't activate them without additional charges.
+117,billing,Perpetual license vs subscription,I thought I bought a perpetual license but you're billing me like a subscription.
+118,billing,Maintenance fee surprise,After purchasing software there's an annual maintenance fee I wasn't aware of.
+119,billing,Support tier not matching invoice,I'm being charged for premium support but only have basic support.
+120,billing,Add-on charges appearing unexpectedly,Surprise charges for add-ons I never selected keep appearing on my bill.
+121,billing,Bundle pricing not respected,I selected a bundle but you broke it out and charged me more.
+122,billing,Early renewal charges,You renewed my subscription early without warning and charged me immediately.
+123,billing,Service level agreement missing,There's no clear SLA so I don't know what service level I should expect.
+124,billing,Penalty for non-usage,You're charging me for unused licenses or services instead of prorating.
+125,billing,Contract auto-renewal sneaky,My contract auto-renewed and I was charged before I realized it.
+126,billing,Billing date inconsistent,My billing date keeps changing making it hard to budget and plan.
+127,billing,Invoice PDF generation failing,I can't generate my invoices as PDF from the portal.
+128,billing,Consolidated billing not available,I have multiple accounts but you won't consolidate them onto one invoice.
+129,billing,Budget cap not respected,I set a monthly budget cap but you charged me beyond it without warning.
+130,billing,Spending limit enforcement issue,The spending limits I configured aren't being enforced properly.
+131,billing,Cost allocation to cost centers,There's no way to split charges across multiple cost centers.
+132,billing,Department chargeback prevented,I can't generate the detailed reports needed to charge back departments.
+133,billing,Finance system integration missing,Your billing system can't integrate with our accounting software.
+134,billing,EDI invoicing not supported,We need EDI formatted invoices but you only support email PDF.
+135,billing,Wire transfer fees expensive,You charge a large fee for wire transfers making net pricing expensive.
+136,billing,ACH payment fees,You charge fees for ACH payments that competitors don't charge.
+137,billing,Check payment option removed,You stopped accepting checks but I need that payment method.
+138,billing,Payment schedule inflexible,You won't work with our payment schedule that differs from your standard terms.
+139,billing,Prepayment discount available,We'd pay upfront for a discount but you don't offer prepayment incentives.
+140,billing,Consumption overage protection missing,I'd like to set a cap on overage charges to avoid surprises.
+141,billing,Tiered overage pricing,Your overage rates don't decrease even with high volume.
+142,billing,Sunset pricing protection,You changed pricing but didn't grandfather existing customers.
+143,billing,Locked into bad pricing,I signed a long contract at bad rates and can't escape it.
+144,billing,Negotiation leverage unequal,As a small company I have no negotiation power for better rates.
+145,billing,Competitor price matching,If competitors offer better pricing will you match it?
+146,billing,Volume commitment confusion,The volume commitment required for discount doesn't match my actual needs.
+147,billing,True-up billing at year end,Large true-up charges at year end from over/under estimating usage.
+148,billing,Minimum monthly spend enforced,You enforce a minimum monthly spend which limits my flexibility.
+149,billing,Per-user pricing scaling issue,Per-user pricing doesn't scale well as we grow our team.
+150,billing,Custom SKU for enterprise,We need custom SKU for our special pricing deal.
+151,billing,License transfer restriction,I can't transfer licenses between team members or projects.
+152,billing,Used license stuck,I paid for a license but can't use it or transfer it to someone else.
+153,billing,Sunk cost in unused licenses,I overpaid for licenses I didn't need and can't get refund.
+154,billing,Licensing model change painful,You changed from perpetual to subscription and existing customers lost value.
+155,billing,Tier downgrade penalty,Downgrading from higher tier charges a penalty fee.
+156,billing,Plan change mid-cycle,Changes to my plan mid-cycle don't take effect until next month.
+157,billing,Billing records incomplete,The billing records available in my account are incomplete or missing.
+158,billing,No billing API,There's no API to query billing data for integration with our systems.
+159,billing,Rate card access denied,You won't provide rate cards needed for budget forecasting.
+160,billing,Usage data delayed,Usage data takes days or weeks to appear making cost tracking difficult.
+161,billing,Reporting granularity insufficient,I need hourly granularity for usage but you only provide daily reports.
+162,billing,Chargeback protection needed,I shouldn't be able to dispute legitimate charges so easily.
+163,billing,Payment proof documentation,I need proper documentation for audit purposes.
+164,billing,Billing compliance certification,Certify your billing system complies with industry standards.
+165,billing,Transparent billing practices,Publish your billing practices transparently.
+166,billing,Fair billing standards,Adopt industry fair billing standards.
+167,billing,Anti-billing abuse protections,Protect against abusive billing practices.
+168,billing,Billing dispute resolution,Clear process for resolving billing disputes.
+169,billing,Billing ombudsman,Third-party ombudsman for billing disputes.
+170,billing,Pricing locked guarantee,Guarantee pricing remains locked for contract duration.
+171,billing,Rate increase notice period,Require 90 days notice before raising rates.
+172,billing,Service credit satisfaction,If unsatisfied with service I can request credit.
+173,billing,Billing arbitration clause,Allow arbitration instead of litigation for billing disputes.
+174,billing,Class action waiver transparency,Be transparent about class action waivers in terms.
+175,billing,Small claims option,Allow small claims court for billing disputes.
+176,billing,Billing transparency report,Publish aggregated billing metrics transparently.
+177,billing,Multiple payment options accepted,We only accept credit cards but need to accept PayPal and bank transfers as well.
+178,billing,Cryptocurrency payment support,Accept cryptocurrency like Bitcoin and Ethereum as payment methods.
+179,billing,Buy now pay later option,Offer BNPL financing options like Affirm or Klarna.
+180,billing,Subscription pause not offered,I need to pause my subscription temporarily but you only allow cancel or continue.
+181,billing,Downtime credit not automatic,When you have an outage you should automatically credit affected customers not require requests.
+182,billing,SLA compliance credits,Define specific SLAs and automatically credit customers when you breach them.
+183,billing,Usage-based variable pricing,Charge based on actual usage not fixed tiers for better cost alignment.
+184,billing,Committed discount transparency,Clearly show savings from committed contracts vs month-to-month pricing.
+185,billing,Bulk seat discounts,Offer volume discounts when purchasing multiple seats or licenses.
+186,billing,Multi-year discount,Offer deeper discounts for multi-year commitments vs annual.
+187,billing,Consumption-based pricing fairer,Your fixed tier pricing doesn't match my actual consumption patterns.
+188,billing,Reserved capacity discount,Offer reserved capacity discounts similar to cloud providers.
+189,billing,Spot pricing option,Offer lower prices for off-peak usage times similar to EC2 spot instances.
+190,billing,Mix and match tier pricing,Let customers pick features from different tiers rather than forcing specific tiers.
+191,billing,Transparent pricing calculator,Provide a calculator where I can input my use case and see exact cost.
+192,billing,Cost forecasting tools,Help me predict future costs based on current and projected usage.
+193,billing,Budget alerts,Notify me when spending approaches my monthly budget or contract commit.
+194,billing,Budget enforcement,Allow setting a hard cap on monthly spend to avoid surprise charges.
+195,billing,Spend analytics dashboard,Show me detailed breakdowns of where my spending is going.
+196,billing,Cost optimization recommendations,Suggest ways I could reduce spending based on my usage patterns.
+197,billing,Historical cost trends,Show me how my costs have changed over time and forecast future trends.
+198,billing,Competitor pricing comparison,Show how your pricing compares to alternatives so I can evaluate ROI.
+199,billing,Free tier limitations clear,Document exactly what's limited in the free tier to set expectations.
+200,billing,Freemium to paid upgrade path,Make it obvious how to upgrade from free to paid and what the benefits are.
