@@ -13,6 +13,10 @@ import numpy as np
 import csv
 from pathlib import Path
 
+import math
+from collections import defaultdict
+from scipy.sparse import lil_matrix
+
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -466,28 +470,73 @@ print(f"embed : {df.iloc[sample_idx]['embedding_text'][:120]}")
 
 
 class TFIDFExtractor:
-    def __init__(self, word_max=35000, char_max=20000):
+    def __init__(self, word_max=35000, min_df=2, max_df=0.95, ngram_range=(1, 2)):
         self.word_max = word_max
-        self.char_max = char_max
-        self.word_vec = TfidfVectorizer(
-            lowercase=True, analyzer='word', ngram_range=(1, 2),
-            min_df=2, max_df=0.95, sublinear_tf=True,
-            strip_accents='unicode', max_features=word_max
-        )
-        self.char_vec = TfidfVectorizer(
-            lowercase=True, analyzer='char_wb', ngram_range=(3, 5),
-            min_df=2, sublinear_tf=True, max_features=char_max
-        )
+        self.min_df = min_df
+        self.max_df = max_df
+        self.ngram_range = ngram_range
+        self.vocab = {}
+        self.idf = {}
+        self.n_docs = 0
+
+    def _get_ngrams(self, tokens, n):
+        return [' '.join(tokens[i:i+n]) for i in range(len(tokens) - n + 1)]
+
+    def _tokenize(self, text):
+        text = text.lower()
+        tokens = re.findall(r'\b\w+\b', text)
+        return tokens
 
     def fit(self, texts):
-        self.word_vec.fit(texts)
-        self.char_vec.fit(texts)
+        doc_freq = defaultdict(int)
+        n_docs = len(texts)
+        self.n_docs = n_docs
+
+        for text in texts:
+            tokens = self._tokenize(text)
+            seen_terms = set()
+
+            for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
+                ngrams = self._get_ngrams(tokens, n)
+                for ngram in ngrams:
+                    if ngram not in seen_terms:
+                        doc_freq[ngram] += 1
+                        seen_terms.add(ngram)
+
+        min_count = max(1, int(self.min_df))
+        max_count = int(self.max_df * n_docs)
+
+        vocab_idx = 0
+        for term, count in sorted(doc_freq.items()):
+            if min_count <= count <= max_count and vocab_idx < self.word_max:
+                self.vocab[term] = vocab_idx
+                self.idf[term] = math.log(n_docs / count)
+                vocab_idx += 1
+
         return self
 
     def transform(self, texts):
-        X_word = self.word_vec.transform(texts)
-        X_char = self.char_vec.transform(texts)
-        return hstack([X_word, X_char]).tocsr()
+        n_docs = len(texts)
+        n_features = len(self.vocab)
+        matrix = lil_matrix((n_docs, n_features))
+
+        for doc_idx, text in enumerate(texts):
+            tokens = self._tokenize(text)
+            term_freq = defaultdict(int)
+
+            for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
+                ngrams = self._get_ngrams(tokens, n)
+                for ngram in ngrams:
+                    if ngram in self.vocab:
+                        term_freq[ngram] += 1
+
+            for term, count in term_freq.items():
+                term_idx = self.vocab[term]
+                tf = 1 + math.log(count)
+                tfidf_value = tf * self.idf[term]
+                matrix[doc_idx, term_idx] = tfidf_value
+
+        return matrix.tocsr()
 
 
 # In[19]:
@@ -498,12 +547,12 @@ test_texts_prep = df.iloc[x_test]['tfidf_text'].values
 train_texts_raw = df.iloc[x_train]['raw_text'].values
 test_texts_raw = df.iloc[x_test]['raw_text'].values
 
-extractor_prep = TFIDFExtractor(word_max=35000, char_max=20000)
+extractor_prep = TFIDFExtractor(word_max=35000)
 extractor_prep.fit(train_texts_prep)
 X_train_tfidf_prep = extractor_prep.transform(train_texts_prep)
 X_test_tfidf_prep = extractor_prep.transform(test_texts_prep)
 
-extractor_raw = TFIDFExtractor(word_max=35000, char_max=20000)
+extractor_raw = TFIDFExtractor(word_max=35000)
 extractor_raw.fit(train_texts_raw)
 X_train_tfidf_raw = extractor_raw.transform(train_texts_raw)
 X_test_tfidf_raw = extractor_raw.transform(test_texts_raw)
