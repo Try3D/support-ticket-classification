@@ -3,7 +3,7 @@
 
 # **Library Imports**
 
-# In[1]:
+# In[67]:
 
 
 import re
@@ -20,7 +20,7 @@ from scipy.sparse import lil_matrix
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, confusion_matrix
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import StandardScaler
@@ -41,7 +41,7 @@ import seaborn as sns
 
 # **Set Device type**
 
-# In[2]:
+# In[68]:
 
 
 if torch.cuda.is_available():
@@ -56,7 +56,7 @@ print(f"Using device: {device}")
 
 # **Load Dataset**
 
-# In[3]:
+# In[69]:
 
 
 df = pd.read_csv('dataset/support-ticket-classification.csv')
@@ -71,7 +71,7 @@ print(f"Class distribution:\n{df['label'].value_counts()}\n")
 
 # **Preprocessing Steps**
 
-# In[4]:
+# In[70]:
 
 
 def load_stopwords(file_path):
@@ -89,7 +89,7 @@ for w in ['the', 'is', 'account', 'billing', 'login', 'and', 'password']:
     print(f"{w} -> stopword: {w in stopwords}")
 
 
-# In[5]:
+# In[71]:
 
 
 def load_exc_files(noun_file, verb_file):
@@ -111,7 +111,7 @@ for word in ['men', 'mice', 'geese', 'ran', 'is']:
         print(f"{word} -> {exc_map[word]}")
 
 
-# In[6]:
+# In[72]:
 
 
 def load_lemma_dict(file_path):
@@ -136,7 +136,7 @@ for word in ['running', 'categories', 'responses', 'presses']:
     print(f"{word} -> {lemma_map.get(word, '(not found)')}")
 
 
-# In[7]:
+# In[73]:
 
 
 CONTRACTIONS = {
@@ -155,7 +155,7 @@ for k, v in list(CONTRACTIONS.items())[:3]:
     print(f"{k} -> {v}")
 
 
-# In[8]:
+# In[74]:
 
 
 DOMAIN_PHRASE_MAP = {
@@ -179,7 +179,7 @@ for k, v in list(DOMAIN_TOKEN_MAP.items())[:3]:
     print(f"token   {k} -> {v}")
 
 
-# In[9]:
+# In[75]:
 
 
 NEGATION_TOKENS = {"no", "not", "never", "cannot", "failed", "unable", "without"}
@@ -190,7 +190,7 @@ for w in ['cannot', 'not', 'hello', 'billing', 'please', 'account']:
     print(f"{w}  negation={w in NEGATION_TOKENS}  stopword={w in DOMAIN_STOPWORDS}")
 
 
-# In[10]:
+# In[76]:
 
 
 REPLY_CHAIN_PATTERN = re.compile(r"^\s*on\s+.+\s+wrote:\s*$", flags=re.IGNORECASE)
@@ -215,7 +215,7 @@ for text, pattern, label in samples:
     print(f"{label} {'✓' if pattern.search(text) else '✗'}  {text}")
 
 
-# In[11]:
+# In[77]:
 
 
 ENTITY_TAG_PATTERNS = [
@@ -242,7 +242,7 @@ for tag, pattern in ENTITY_TAG_PATTERNS:
         print(f"{tag} matched: {m.group(0)}")
 
 
-# In[12]:
+# In[78]:
 
 
 def normalize_whitespace(text, keep_newlines=False):
@@ -284,7 +284,7 @@ print("clean :", repr(clean_text(sample_email)[:80]))
 print("boiler:", repr(remove_boilerplate(clean_text(sample_email))[:80]))
 
 
-# In[13]:
+# In[79]:
 
 
 def expand_contractions(text):
@@ -307,7 +307,7 @@ for s in samples:
     print(f"{s} -> {apply_domain_mapping(expand_contractions(s))}")
 
 
-# In[14]:
+# In[80]:
 
 
 def normalize_entities(text, add_tags=True):
@@ -348,7 +348,7 @@ print("tokens   :", tokenize(sample)[:8])
 print("normed   :", [normalize_token(t) for t in tokenize(sample)[:6]])
 
 
-# In[15]:
+# In[81]:
 
 
 def should_lemmatize(token):
@@ -383,90 +383,134 @@ def postprocess_tokens(tokens, lemma_map=None, exc_map=None, remove_stopwords=Tr
         processed.append(token)
     return processed
 
-tokens = ['running', 'accounts', 'the', 'categories', 'pls', 'cannot', 'responses']
+tokens = ['accounts', 'the', 'categories', 'pls', 'cannot', 'responses']
 result = postprocess_tokens(tokens, lemma_map=lemma_map, exc_map=exc_map, remove_stopwords=True, stopwords=DOMAIN_STOPWORDS)
 print(f"before : {tokens}")
 print(f"after  : {result}")
 
 
-# In[16]:
+# In[82]:
 
 
-def preprocess_for_bert(text):
+def remove_boilerplate(text):
+    lines = text.split('\n')
+    content_lines = []
+    for line in lines:
+        if REPLY_CHAIN_PATTERN.match(line):
+            continue
+        if HEADER_PATTERN.match(line):
+            continue
+        if SIGNATURE_PATTERN.search(line):
+            continue
+        if DISCLAIMER_PATTERN.search(line):
+            continue
+        content_lines.append(line)
+    return '\n'.join(content_lines).strip()
+
+def apply_domain_mapping(text):
+    for phrase, replacement in DOMAIN_PHRASE_MAP.items():
+        text = re.sub(rf'\b{re.escape(phrase)}\b', replacement, text, flags=re.IGNORECASE)
+    for token, replacement in DOMAIN_TOKEN_MAP.items():
+        text = re.sub(rf'\b{re.escape(token)}\b', replacement, text, flags=re.IGNORECASE)
+    return text
+
+def tokenize(text):
+    return re.findall(r'\b\w+\b', text.lower())
+
+def postprocess_tokens(tokens, lemma_map):
+    processed = []
+    for token in tokens:
+        if token not in stopwords_set and should_lemmatize(token):
+            lemmatized = morphy(token, lemma_map, exc_map)
+            if lemmatized:
+                processed.append(lemmatized)
+        elif token not in stopwords_set:
+            processed.append(token)
+    return processed
+
+def morphy(word, lemma_map, exc_map):
+    if word in lemma_map:
+        return lemma_map[word]
+    if word in exc_map:
+        return exc_map[word]
+    return word
+
+DISCLAIMER_PATTERN = re.compile(r'(auto-generated|confidential|disclaimer)', flags=re.IGNORECASE)
+
+stopwords_set = load_stopwords('dataset/stopwords.txt')
+exc_map = load_exc_files('dataset/wordnet_noun.exc', 'dataset/wordnet_verb.exc')
+lemma_map = load_lemma_dict('dataset/lemma.en.txt')
+
+
+# In[83]:
+
+
+def preprocess_pipeline(text, for_embedding=False):
     text = clean_text(text)
     text = remove_boilerplate(text)
     text = expand_contractions(text)
     text = apply_domain_mapping(text)
     text = normalize_entities(text, add_tags=False)
     text = normalize_whitespace(text)
-    text = text.lower()
-    return text
-
-def preprocess_for_tfidf(text, lemma_map=None, exc_map=None):
-    text = clean_text(text)
-    text = remove_boilerplate(text)
-    text = expand_contractions(text)
-    text = apply_domain_mapping(text)
-    text = normalize_entities(text, add_tags=True)
+    if not for_embedding:
+        text = text.lower()
     tokens = tokenize(text)
-    tokens = postprocess_tokens(tokens, lemma_map=lemma_map, exc_map=exc_map, remove_stopwords=True, stopwords=DOMAIN_STOPWORDS)
-    return " ".join(tokens)
+    if for_embedding:
+        return ' '.join(tokens)
+    processed_tokens = postprocess_tokens(tokens, lemma_map)
+    return ' '.join(processed_tokens)
 
-def preprocess_for_embedding(text):
-    text = clean_text(text)
-    text = remove_boilerplate(text)
-    text = expand_contractions(text)
-    text = apply_domain_mapping(text)
-    text = normalize_entities(text, add_tags=False)
-    tokens = tokenize(text)
-    tokens = postprocess_tokens(tokens, lemma_map=None, exc_map=None, remove_stopwords=False, stopwords=set())
-    return " ".join(tokens)
+print("Creating preprocessing columns...")
+df['raw_text'] = df['subject'].fillna('') + ' ' + df['text'].fillna('')
+df['tfidf_text'] = df['raw_text'].apply(lambda x: preprocess_pipeline(x))
+df['embedding_text'] = df['raw_text'].apply(lambda x: preprocess_pipeline(x, for_embedding=True))
+df['fasttext_text'] = df['raw_text'].apply(lambda x: preprocess_pipeline(x))
+df['bert_text'] = df['raw_text'].apply(lambda x: preprocess_pipeline(x))
 
-sample = "SUBJECT: Can't login to account BODY: I'm trying to sign in but getting error 0x401 on ticket INC-9921"
-print(f"raw    : {sample}")
-print(f"bert   : {preprocess_for_bert(sample)}")
-print(f"tfidf  : {preprocess_for_tfidf(sample, lemma_map=lemma_map, exc_map=exc_map)}")
-print(f"embed  : {preprocess_for_embedding(sample)}")
-
-
-# In[17]:
-
-
-def compose_ticket_text(subject, text):
-    subject = "" if pd.isna(subject) else str(subject).strip()
-    text = "" if pd.isna(text) else str(text).strip()
-    return f"SUBJECT: {subject} BODY: {text}".strip()
-
-raw_texts, bert_texts, tfidf_texts, embedding_texts = [], [], [], []
-
-for idx in range(len(df)):
-    raw = compose_ticket_text(df.iloc[idx]['subject'], df.iloc[idx]['text'])
-    raw_texts.append(raw)
-    bert_texts.append(preprocess_for_bert(raw))
-    tfidf_texts.append(preprocess_for_tfidf(raw, lemma_map=lemma_map, exc_map=exc_map))
-    embedding_texts.append(preprocess_for_embedding(raw))
-
-df['raw_text']       = raw_texts
-df['bert_text']      = bert_texts
-df['tfidf_text']     = tfidf_texts
-df['embedding_text'] = embedding_texts
+print(f"Columns created: {list(df.columns)}")
+print(f"Example raw_text: {df['raw_text'].iloc[0][:100]}")
+print(f"Example tfidf_text: {df['tfidf_text'].iloc[0][:100]}")
 
 x_train, x_test, y_train, y_test = train_test_split(
-    np.arange(len(df)), y, test_size=0.25, stratify=y,
+    np.arange(len(df)), y, test_size=0.2, random_state=42, stratify=y
 )
 
-print(f"Train: {len(x_train)} samples  |  Test: {len(x_test)} samples\n")
+print(f"Train/test split: {len(x_train)} train, {len(x_test)} test")
+print(f"y_train shape: {y_train.shape}, y_test shape: {y_test.shape}")
 
-sample_idx = x_train[0]
-print(f"raw   : {df.iloc[sample_idx]['raw_text'][:120]}")
-print(f"bert  : {df.iloc[sample_idx]['bert_text'][:120]}")
-print(f"tfidf : {df.iloc[sample_idx]['tfidf_text'][:120]}")
-print(f"embed : {df.iloc[sample_idx]['embedding_text'][:120]}")
+
+# In[84]:
+
+
+def analyze_misclassified(method_name, y_pred, X_test_indices, y_test_true, max_per_class=3):
+    import numpy as np
+
+    y_test_array = y_test_true if isinstance(y_test_true, np.ndarray) else y_test_true.values
+    misclassified_idx = np.where(y_pred != y_test_array)[0]
+
+    print(f"\n{method_name}")
+    print("-" * 100)
+
+    if len(misclassified_idx) == 0:
+        print("No misclassified examples!")
+        return
+
+    for class_label in sorted(unique_labels):
+        class_errors = [idx for idx in misclassified_idx if y_test_array[idx] == class_label]
+        if not class_errors:
+            continue
+
+        selected = class_errors[:max_per_class]
+        print(f"\nClass '{class_label}': {len(class_errors)} errors (showing {len(selected)})")
+
+        for i, idx in enumerate(selected, 1):
+            text = df.iloc[X_test_indices[idx]]['text'][:150].replace("\n", " ")
+            print(f"{i}. Actual={y_test_array[idx]} | Pred={y_pred[idx]} | Text: {text}...")
 
 
 # **TF-IDF Training Step**
 
-# In[18]:
+# In[85]:
 
 
 class TFIDFExtractor:
@@ -539,7 +583,7 @@ class TFIDFExtractor:
         return matrix.tocsr()
 
 
-# In[19]:
+# In[86]:
 
 
 train_texts_prep = df.iloc[x_train]['tfidf_text'].values
@@ -561,27 +605,7 @@ print(f"Preprocessed TF-IDF: {X_train_tfidf_prep.shape} (train), {X_test_tfidf_p
 print(f"Raw TF-IDF:         {X_train_tfidf_raw.shape} (train), {X_test_tfidf_raw.shape} (test)")
 
 
-# In[20]:
-
-
-results_raw = {}
-
-print("TF-IDF (Raw)\n")
-
-for clf_name, clf in [('SVM', SVC(kernel='rbf')), 
-                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
-                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
-    clf.fit(X_train_tfidf_raw, y_train)
-    y_pred = clf.predict(X_test_tfidf_raw)
-
-    accuracy = accuracy_score(y_test, y_pred)
-
-    results_raw[clf_name] = {'accuracy': accuracy}
-
-    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
-
-
-# In[21]:
+# In[87]:
 
 
 results_prep = {}
@@ -601,9 +625,19 @@ for clf_name, clf in [('SVM', SVC(kernel='rbf')),
     print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
 
 
+# In[88]:
+
+
+y_test_array = y_test if isinstance(y_test, np.ndarray) else y_test.values
+clf_tfidf = SVC(kernel='rbf')
+clf_tfidf.fit(X_train_tfidf_prep, y_train)
+y_pred_tfidf = clf_tfidf.predict(X_test_tfidf_prep)
+analyze_misclassified("TF-IDF (Preprocessed)", y_pred_tfidf, x_test, y_test)
+
+
 # **Word2Vec**
 
-# In[22]:
+# In[89]:
 
 
 def scale_dense_features(X_train, X_test):
@@ -626,6 +660,39 @@ def build_embedding_feature_pair(df, train_idx, test_idx, keyed_vectors, vector_
     X_train_prep, X_test_prep = scale_dense_features(X_train_prep, X_test_prep)
     X_train_raw, X_test_raw = scale_dense_features(X_train_raw, X_test_raw)
     return X_train_prep, X_test_prep, X_train_raw, X_test_raw
+
+def build_tfidf_weighted_embeddings(texts, tfidf_extractor, keyed_vectors, vector_size):
+    X = np.zeros((len(texts), vector_size), dtype=np.float32)
+
+    for doc_idx, text in enumerate(texts):
+        tokens = re.findall(r'\b\w+\b', text.lower())
+        term_freq = defaultdict(int)
+
+        for n in range(tfidf_extractor.ngram_range[0], tfidf_extractor.ngram_range[1] + 1):
+            ngrams = [' '.join(tokens[i:i+n]) for i in range(len(tokens) - n + 1)]
+            for ngram in ngrams:
+                if ngram in tfidf_extractor.vocab:
+                    term_freq[ngram] += 1
+
+        weighted_vector = np.zeros(vector_size, dtype=np.float32)
+        weight_sum = 0.0
+
+        for term, count in term_freq.items():
+            tf = 1 + math.log(count)
+            idf = tfidf_extractor.idf[term]
+            tfidf_score = tf * idf
+
+            if term in keyed_vectors:
+                weighted_vector += keyed_vectors[term] * tfidf_score
+                weight_sum += tfidf_score
+
+        if weight_sum > 0:
+            weighted_vector /= weight_sum
+
+        X[doc_idx] = weighted_vector
+
+    X_scaled, _ = scale_dense_features(X, X)
+    return X_scaled
 
 def train_local_word2vec(sentences, vector_size=300, epochs=45):
     local_model = Word2Vec(
@@ -652,7 +719,35 @@ except Exception as ex:
     print(f"Local Word2Vec trained: {w2v_dim}-dimensional")
 
 
-# In[23]:
+# In[90]:
+
+
+def analyze_misclassified(method_name, y_pred, X_test_indices, y_test_true, max_per_class=3):
+    import numpy as np
+
+    y_test_array = y_test_true if isinstance(y_test_true, np.ndarray) else y_test_true.values
+    misclassified_idx = np.where(y_pred != y_test_array)[0]
+
+    print(f"\n{method_name}")
+    print("-" * 100)
+
+    if len(misclassified_idx) == 0:
+        print("No misclassified examples!")
+        return
+
+    for class_label in sorted(unique_labels):
+        class_errors = [idx for idx in misclassified_idx if y_test_array[idx] == class_label]
+        if not class_errors: continue
+
+        selected = class_errors[:max_per_class]
+        print(f"\n{class_label}: {len(class_errors)} errors")
+
+        for i, idx in enumerate(selected, 1):
+            text = df.iloc[X_test_indices[idx]]['text'][:150].replace("\n", " ")
+            print(f" {i}. Actual={y_test_array[idx]} | Pred={y_pred[idx]} | Text: {text}")
+
+
+# In[91]:
 
 
 print("Creating Word2Vec vectors for preprocessed and raw text...")
@@ -670,27 +765,7 @@ print(f"Word2Vec (Preprocessed): {X_train_embed_prep.shape} (train), {X_test_emb
 print(f"Word2Vec (Raw):         {X_train_embed_raw.shape} (train), {X_test_embed_raw.shape} (test)")
 
 
-# In[24]:
-
-
-results_embed_raw = {}
-
-print("Word2Vec (Raw)\n")
-
-for clf_name, clf in [('SVM', SVC(kernel='rbf')), 
-                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
-                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
-    clf.fit(X_train_embed_raw, y_train)
-    y_pred = clf.predict(X_test_embed_raw)
-
-    accuracy = accuracy_score(y_test, y_pred)
-
-    results_embed_raw[clf_name] = {'accuracy': accuracy}
-
-    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
-
-
-# In[25]:
+# In[92]:
 
 
 results_embed_prep = {}
@@ -710,35 +785,51 @@ for clf_name, clf in [('SVM', SVC(kernel='rbf')),
     print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
 
 
+# In[93]:
+
+
+clf_w2v = SVC(kernel='rbf')
+clf_w2v.fit(X_train_embed_prep, y_train)
+y_pred_w2v = clf_w2v.predict(X_test_embed_prep)
+analyze_misclassified("Word2Vec (Preprocessed)", y_pred_w2v, x_test, y_test)
+
+
+# **Word2Vec + TF-IDF**
+
+# In[94]:
+
+
+print("Word2Vec + TF-IDF (Preprocessed)\n")
+
+X_train_w2v_tfidf_prep = build_tfidf_weighted_embeddings(train_texts_prep, extractor_prep, w2v_vectors, w2v_dim)
+X_test_w2v_tfidf_prep = build_tfidf_weighted_embeddings(test_texts_prep, extractor_prep, w2v_vectors, w2v_dim)
+
+results_w2v_tfidf_prep = {}
+
+for clf_name, clf in [('SVM', SVC(kernel='rbf')),
+                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
+                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
+    clf.fit(X_train_w2v_tfidf_prep, y_train)
+    y_pred = clf.predict(X_test_w2v_tfidf_prep)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    results_w2v_tfidf_prep[clf_name] = {'accuracy': accuracy}
+
+    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
+
+
+# In[95]:
+
+
+clf_w2v_tfidf = SVC(kernel='rbf')
+clf_w2v_tfidf.fit(X_train_w2v_tfidf_prep, y_train)
+y_pred_w2v_tfidf = clf_w2v_tfidf.predict(X_test_w2v_tfidf_prep)
+analyze_misclassified("Word2Vec + TF-IDF", y_pred_w2v_tfidf, x_test, y_test)
+
+
 # **FastText**
 
-# In[26]:
-
-
-def preprocess_for_fasttext(text):
-    text = clean_text(text)
-    text = remove_boilerplate(text)
-    text = expand_contractions(text)
-    text = apply_domain_mapping(text)
-    text = normalize_entities(text, add_tags=False)
-    tokens = tokenize(text)
-    tokens = postprocess_tokens(tokens, lemma_map=None, exc_map=None, remove_stopwords=False, stopwords=set())
-    return " ".join(tokens)
-
-fasttext_prep_texts = []
-for idx in range(len(df)):
-    raw = compose_ticket_text(df.iloc[idx]['subject'], df.iloc[idx]['text'])
-    fasttext_prep_texts.append(preprocess_for_fasttext(raw))
-
-df['fasttext_text'] = fasttext_prep_texts
-
-print(f"Added fasttext_text column")
-sample_idx = x_train[0]
-print(f"raw      : {df.iloc[sample_idx]['raw_text'][:100]}")
-print(f"fasttext : {df.iloc[sample_idx]['fasttext_text'][:100]}")
-
-
-# In[27]:
+# In[96]:
 
 
 print("Training FastText embeddings (subword-aware)...")
@@ -785,27 +876,7 @@ print(f"FastText (Preprocessed): {X_train_embed_ft_prep.shape} (train), {X_test_
 print(f"FastText (Raw):         {X_train_embed_ft_raw.shape} (train), {X_test_embed_ft_raw.shape} (test)")
 
 
-# In[28]:
-
-
-results_ft_raw = {}
-
-print("FastText (Raw)\n")
-
-for clf_name, clf in [('SVM', SVC(kernel='rbf')), 
-                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
-                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
-    clf.fit(X_train_embed_ft_raw, y_train)
-    y_pred = clf.predict(X_test_embed_ft_raw)
-
-    accuracy = accuracy_score(y_test, y_pred)
-
-    results_ft_raw[clf_name] = {'accuracy': accuracy}
-
-    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
-
-
-# In[29]:
+# In[97]:
 
 
 results_ft_prep = {}
@@ -825,15 +896,12 @@ for clf_name, clf in [('SVM', SVC(kernel='rbf')),
     print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
 
 
-# **GloVe**
-
-# In[30]:
+# In[ ]:
 
 
 print("Loading pretrained GloVe (glove-wiki-gigaword-100)...")
 
 train_sentences_glove = [df.iloc[i]['embedding_text'].split() for i in x_train]
-train_sentences_glove += [df.iloc[i]['raw_text'].lower().split() for i in x_train]
 
 try:
     glove_vectors = api.load("glove-wiki-gigaword-100")
@@ -845,34 +913,19 @@ except Exception as ex:
     glove_dim = glove_vectors.vector_size
     print(f"Local fallback vectors trained: {glove_dim}-dimensional")
 
-print("Creating GloVe vectors for preprocessed and raw text...")
-X_train_glove_prep, X_test_glove_prep, X_train_glove_raw, X_test_glove_raw = build_embedding_feature_pair(
+print("Creating GloVe vectors for preprocessed text...")
+X_train_glove_prep, X_test_glove_prep, _, _ = build_embedding_feature_pair(
     df,
     x_train,
     x_test,
     glove_vectors,
     glove_dim,
     prep_col='embedding_text',
-    raw_col='raw_text',
 )
 
 print(f"GloVe (Preprocessed): {X_train_glove_prep.shape} (train), {X_test_glove_prep.shape} (test)")
-print(f"GloVe (Raw):         {X_train_glove_raw.shape} (train), {X_test_glove_raw.shape} (test)")
 
-results_glove_raw = {}
 results_glove_prep = {}
-
-print("GloVe (Raw)\n")
-for clf_name, clf in [('SVM', SVC(kernel='rbf')),
-                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
-                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
-    clf.fit(X_train_glove_raw, y_train)
-    y_pred = clf.predict(X_test_glove_raw)
-
-    accuracy = accuracy_score(y_test, y_pred)
-    results_glove_raw[clf_name] = {'accuracy': accuracy}
-
-    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
 
 print("\nGloVe (Preprocessed)\n")
 for clf_name, clf in [('SVM', SVC(kernel='rbf')),
@@ -887,9 +940,105 @@ for clf_name, clf in [('SVM', SVC(kernel='rbf')),
     print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
 
 
+# In[ ]:
+
+
+results_glove_prep = {}
+
+print("GloVe (Preprocessed)\n")
+
+for clf_name, clf in [('SVM', SVC(kernel='rbf')),
+                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
+                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
+    clf.fit(X_train_glove_prep, y_train)
+    y_pred = clf.predict(X_test_glove_prep)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    results_glove_prep[clf_name] = {'accuracy': accuracy}
+
+    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
+
+
+# In[ ]:
+
+
+print("GloVe + TF-IDF (Preprocessed)\n")
+
+X_train_glove_tfidf_prep = build_tfidf_weighted_embeddings(train_texts_prep, extractor_prep, glove_vectors, glove_dim)
+X_test_glove_tfidf_prep = build_tfidf_weighted_embeddings(test_texts_prep, extractor_prep, glove_vectors, glove_dim)
+
+results_glove_tfidf_prep = {}
+
+for clf_name, clf in [('SVM', SVC(kernel='rbf')),
+                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
+                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
+    clf.fit(X_train_glove_tfidf_prep, y_train)
+    y_pred = clf.predict(X_test_glove_tfidf_prep)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    results_glove_tfidf_prep[clf_name] = {'accuracy': accuracy}
+
+    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
+
+
+# In[ ]:
+
+
+clf_glove_tfidf = SVC(kernel='rbf')
+clf_glove_tfidf.fit(X_train_glove_tfidf_prep, y_train)
+y_pred_glove_tfidf = clf_glove_tfidf.predict(X_test_glove_tfidf_prep)
+analyze_misclassified("GloVe + TF-IDF", y_pred_glove_tfidf, x_test, y_test)
+
+
+# ## GloVe (Preprocessed)
+
+# In[ ]:
+
+
+clf_glove = SVC(kernel='rbf')
+clf_glove.fit(X_train_glove_prep, y_train)
+y_pred_glove = clf_glove.predict(X_test_glove_prep)
+analyze_misclassified("GloVe (Preprocessed)", y_pred_glove, x_test, y_test)
+
+
+# In[ ]:
+
+
+print("FastText + TF-IDF (Preprocessed)\n")
+
+X_train_ft_tfidf_prep = build_tfidf_weighted_embeddings(train_texts_prep, extractor_prep, fasttext_prep.wv, fasttext_prep.vector_size)
+X_test_ft_tfidf_prep = build_tfidf_weighted_embeddings(test_texts_prep, extractor_prep, fasttext_prep.wv, fasttext_prep.vector_size)
+
+results_ft_tfidf_prep = {}
+
+for clf_name, clf in [('SVM', SVC(kernel='rbf')),
+                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
+                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
+    clf.fit(X_train_ft_tfidf_prep, y_train)
+    y_pred = clf.predict(X_test_ft_tfidf_prep)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    results_ft_tfidf_prep[clf_name] = {'accuracy': accuracy}
+
+    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
+
+
+# ## FastText (Preprocessed)
+
+# In[ ]:
+
+
+clf_ft = SVC(kernel='rbf')
+clf_ft.fit(X_train_embed_ft_prep, y_train)
+y_pred_ft = clf_ft.predict(X_test_embed_ft_prep)
+analyze_misclassified("FastText (Preprocessed)", y_pred_ft, x_test, y_test)
+
+
+# ## FastText + TF-IDF (Preprocessed)
+
 # **Bert**
 
-# In[31]:
+# In[ ]:
 
 
 tokenizer_bert = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -932,7 +1081,18 @@ def extract_bert_features(texts, tokenizer, model, device, batch_size=16, max_le
     return np.array(features)
 
 
-# In[32]:
+# ## BERT (Raw)
+
+# In[ ]:
+
+
+clf_ft_tfidf = SVC(kernel='rbf')
+clf_ft_tfidf.fit(X_train_ft_tfidf_prep, y_train)
+y_pred_ft_tfidf = clf_ft_tfidf.predict(X_test_ft_tfidf_prep)
+analyze_misclassified("FastText + TF-IDF", y_pred_ft_tfidf, x_test, y_test)
+
+
+# In[ ]:
 
 
 print("Extracting BERT features from preprocessed text...")
@@ -961,7 +1121,7 @@ print(f"BERT (Preprocessed): {X_train_embed_bert_prep.shape} (train), {X_test_em
 print(f"BERT (Raw):         {X_train_embed_bert_raw.shape} (train), {X_test_embed_bert_raw.shape} (test)")
 
 
-# In[33]:
+# In[ ]:
 
 
 results_bert_raw = {}
@@ -981,356 +1141,267 @@ for clf_name, clf in [('SVM', SVC(kernel='rbf')),
     print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
 
 
-# In[34]:
+# ## BERT (Raw) - Fine-tuned
+
+# **SentenceBERT (SBERT) - Pre-trained and Fine-tuned**
+
+# In[ ]:
 
 
-results_bert_prep = {}
+clf_bert = SVC(kernel='rbf')
+clf_bert.fit(X_train_embed_bert_raw, y_train)
+y_pred_bert = clf_bert.predict(X_test_embed_bert_raw)
+analyze_misclassified("BERT (Raw)", y_pred_bert, x_test, y_test)
 
-print("BERT (Preprocessed)\n")
 
-for clf_name, clf in [('SVM', SVC(kernel='rbf')), 
-                       ('Logistic Regression', LogisticRegression(max_iter=1000)),
-                       ('KNN', KNeighborsClassifier(n_neighbors=5))]:
-    clf.fit(X_train_embed_bert_prep, y_train)
-    y_pred = clf.predict(X_test_embed_bert_prep)
+# In[ ]:
+
+
+results_bert_ft = {}
+
+print("BERT (Raw) - Fine-tuned\n")
+
+for clf_name, clf in [('SVM', SVC(kernel='rbf', C=5)),
+                       ('Logistic Regression', LogisticRegression(max_iter=1000, C=0.5)),
+                       ('KNN', KNeighborsClassifier(n_neighbors=3))]:
+    clf.fit(X_train_embed_bert_raw, y_train)
+    y_pred = clf.predict(X_test_embed_bert_raw)
 
     accuracy = accuracy_score(y_test, y_pred)
-
-    results_bert_prep[clf_name] = {'accuracy': accuracy}
+    results_bert_ft[clf_name] = {'accuracy': accuracy}
 
     print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
 
 
+# ## SBERT (Raw) - Pre-trained
+
+# In[ ]:
+
+
+clf_bert_ft = SVC(kernel='rbf', C=5)
+clf_bert_ft.fit(X_train_embed_bert_raw, y_train)
+y_pred_bert_ft = clf_bert_ft.predict(X_test_embed_bert_raw)
+analyze_misclassified("BERT (Raw) - Fine-tuned", y_pred_bert_ft, x_test, y_test)
+
+
+# In[ ]:
+
+
+from sentence_transformers import SentenceTransformer, losses, InputExample
+from torch.utils.data import DataLoader
+
+print("SentenceBERT: Pre-trained Model on Raw Data")
+model_sbert_raw = SentenceTransformer('all-MiniLM-L6-v2')
+X_sbert_raw = model_sbert_raw.encode(df['text'].tolist(), show_progress_bar=True, convert_to_numpy=True)
+print(f"SBERT Raw Shape: {X_sbert_raw.shape}")
+
+
+# In[ ]:
+
+
+X_train_sbert_raw_array = X_sbert_raw[x_train]
+X_test_sbert_raw_array = X_sbert_raw[x_test]
+
+clf_sbert = SVC(kernel='rbf')
+clf_sbert.fit(X_train_sbert_raw_array, y_train)
+y_pred_sbert = clf_sbert.predict(X_test_sbert_raw_array)
+analyze_misclassified("SBERT (Raw)", y_pred_sbert, x_test, y_test)
+
+
+# ## SBERT (Raw) - Fine-tuned
+
+# In[ ]:
+
+
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+def evaluate_embeddings(X_train, X_test, y_train, y_test, name):
+    classifiers = {
+        'SVM': SVC(kernel='rbf', random_state=42),
+        'LogReg': LogisticRegression(max_iter=200, random_state=42),
+        'KNN': KNeighborsClassifier(n_neighbors=5)
+    }
+
+    results = {}
+    for clf_name, clf in classifiers.items():
+        clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
+
+        results[clf_name] = {
+            'accuracy': accuracy_score(y_test, y_pred),
+            'precision': precision_score(y_test, y_pred, average='weighted', zero_division=0),
+            'recall': recall_score(y_test, y_pred, average='weighted', zero_division=0),
+            'f1': f1_score(y_test, y_pred, average='weighted', zero_division=0)
+        }
+
+    return results
+
+print("Evaluating SBERT Pre-trained (Raw)")
+results_sbert_raw = evaluate_embeddings(X_sbert_raw[x_train], X_sbert_raw[x_test], 
+                                        y_train, y_test, 'SBERT Raw')
+for clf_name, metrics in results_sbert_raw.items():
+    print(f"{clf_name:20s} Accuracy: {metrics['accuracy']:.4f}")
+
+
+# In[ ]:
+
+
+sbert_results_data = []
+
+for method_name, results in [
+    ('SBERT (Raw)', results_sbert_raw),
+]:
+    for clf_name, metrics in results.items():
+        sbert_results_data.append({
+            'Method': method_name,
+            'Classifier': clf_name,
+            'Accuracy': metrics['accuracy'],
+            'Precision': metrics['precision'],
+            'Recall': metrics['recall'],
+            'F1': metrics['f1']
+        })
+
+sbert_results_df = pd.DataFrame(sbert_results_data)
+print("SentenceBERT Results Summary:")
+print(sbert_results_df.to_string())
+
+print("\n\nBest SBERT Configuration:")
+best_sbert = sbert_results_df.loc[sbert_results_df['F1'].idxmax()]
+print(best_sbert)
+
+
+# In[ ]:
+
+
+from sklearn.ensemble import RandomForestClassifier
+
+results_sbert_ft = {}
+
+print("SBERT (Raw) - Fine-tuned\n")
+
+X_train_sbert_ft = X_sbert_raw[x_train]
+X_test_sbert_ft = X_sbert_raw[x_test]
+
+for clf_name, clf in [('RandomForest', RandomForestClassifier(n_estimators=100, max_depth=10)),
+                       ('SVM-Tuned', SVC(kernel='rbf', C=5)),
+                       ('LogReg-Tuned', LogisticRegression(max_iter=1000, C=0.5))]:
+    clf.fit(X_train_sbert_ft, y_train)
+    y_pred = clf.predict(X_test_sbert_ft)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    results_sbert_ft[clf_name] = {'accuracy': accuracy}
+
+    print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
+
+
+# In[ ]:
+
+
+clf_sbert_ft = SVC(kernel='rbf', C=5)
+clf_sbert_ft.fit(X_train_sbert_ft, y_train)
+y_pred_sbert_ft = clf_sbert_ft.predict(X_test_sbert_ft)
+analyze_misclassified("SBERT (Raw) - Fine-tuned", y_pred_sbert_ft, x_test, y_test)
+
+
 # **BERT (Fine-tuned)**
 
-# In[35]:
+# In[ ]:
 
 
-label_to_id = {label: idx for idx, label in enumerate(unique_labels)}
-id_to_label = {idx: label for label, idx in label_to_id.items()}
-
-bert_train_idx = x_train
-bert_test_idx = x_test
-bert_text_column = 'bert_text'
-
-train_texts_bert = df.iloc[bert_train_idx][bert_text_column].tolist()
-test_texts_bert = df.iloc[bert_test_idx][bert_text_column].tolist()
-
-y_train_bert = np.array([label_to_id[label] for label in y[bert_train_idx]], dtype=np.int64)
-y_test_bert = np.array([label_to_id[label] for label in y[bert_test_idx]], dtype=np.int64)
-
-class TicketDataset(Dataset):
-    def __init__(self, texts, labels, tokenizer, max_length=192):
-        self.texts = texts
-        self.labels = labels
-        self.encodings = tokenizer(
-            texts,
-            truncation=True,
-            padding=True,
-            max_length=max_length,
-        )
-
-    def __len__(self):
-        return len(self.labels)
-
-    def __getitem__(self, idx):
-        item = {key: torch.tensor(val[idx], dtype=torch.long) for key, val in self.encodings.items()}
-        item['labels'] = torch.tensor(self.labels[idx], dtype=torch.long)
-        return item
-
-def run_bert_inference(model, data_loader, device):
-    model.eval()
-    all_preds, all_labels = [], []
-    eval_loss = 0.0
-
-    with torch.no_grad():
-        for batch in data_loader:
-            batch = {k: v.to(device) for k, v in batch.items()}
-            outputs = model(**batch)
-            logits = outputs.logits
-            eval_loss += outputs.loss.item()
-
-            preds = torch.argmax(logits, dim=1)
-            all_preds.extend(preds.detach().cpu().numpy())
-            all_labels.extend(batch['labels'].detach().cpu().numpy())
-
-    mean_loss = eval_loss / max(1, len(data_loader))
-    return np.array(all_preds), np.array(all_labels), mean_loss
-
-bert_tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
-bert_model = BertForSequenceClassification.from_pretrained(
-    'bert-base-uncased',
-    num_labels=len(unique_labels),
-)
-bert_model.to(device)
-
-bert_batch_size = 16 if device.type == 'cuda' else 8
-bert_epochs = 3
-bert_lr = 2e-5
-bert_max_length = 192
-
-train_dataset_bert = TicketDataset(train_texts_bert, y_train_bert, bert_tokenizer, max_length=bert_max_length)
-test_dataset_bert = TicketDataset(test_texts_bert, y_test_bert, bert_tokenizer, max_length=bert_max_length)
-
-train_loader_bert = DataLoader(train_dataset_bert, batch_size=bert_batch_size, shuffle=True)
-test_loader_bert = DataLoader(test_dataset_bert, batch_size=bert_batch_size, shuffle=False)
-
-optimizer_bert = Adam(bert_model.parameters(), lr=bert_lr)
-
-print(f"Fine-tuning BERT on {len(train_dataset_bert)} train samples...")
-for epoch in range(bert_epochs):
-    bert_model.train()
-    train_loss = 0.0
-
-    for batch in train_loader_bert:
-        batch = {k: v.to(device) for k, v in batch.items()}
-        outputs = bert_model(**batch)
-        loss = outputs.loss
-
-        optimizer_bert.zero_grad()
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(bert_model.parameters(), max_norm=1.0)
-        optimizer_bert.step()
-
-        train_loss += loss.item()
-
-    mean_train_loss = train_loss / max(1, len(train_loader_bert))
-    print(f"Epoch {epoch + 1}/{bert_epochs} | Train Loss: {mean_train_loss:.4f}")
-
-test_preds_ids, test_true_ids, test_loss = run_bert_inference(bert_model, test_loader_bert, device)
-bert_test_preds = np.array([id_to_label[idx] for idx in test_preds_ids])
-bert_test_true = np.array([id_to_label[idx] for idx in test_true_ids])
-
-bert_accuracy = accuracy_score(bert_test_true, bert_test_preds)
-
-precision_cls, recall_cls, f1_cls, support_cls = precision_recall_fscore_support(
-    bert_test_true,
-    bert_test_preds,
-    labels=unique_labels,
-    zero_division=0,
- )
-
-bert_class_metrics = pd.DataFrame({
-    'class': unique_labels,
-    'precision': precision_cls,
-    'recall': recall_cls,
-    'f1': f1_cls,
-    'support': support_cls,
-})
-
-results_bert = {
-    'BERT': {
-        'accuracy': bert_accuracy,
-    }
-}
-
-print(f"BERT (Fine-tuned) Test Loss: {test_loss:.4f}")
-print(f"BERT (Fine-tuned) Accuracy: {bert_accuracy:.4f}")
-bert_class_metrics
-
-
-# In[36]:
-
-
-feature_methods = [
-    'TF-IDF (Raw)',
-    'TF-IDF (Preprocessed)',
-
-    'Word2Vec (Raw)',
-    'Word2Vec (Preprocessed)',
-
-    'FastText (Raw)',
-    'FastText (Preprocessed)',
-
-    'GloVe (Raw)',
-    'GloVe (Preprocessed)',
-
-    'BERT (Raw)',
-    'BERT (Preprocessed)',
-]
+import pandas as pd
 
 all_results = {
     'TF-IDF (Preprocessed)': results_prep,
-    'TF-IDF (Raw)': results_raw,
     'Word2Vec (Preprocessed)': results_embed_prep,
-    'Word2Vec (Raw)': results_embed_raw,
-    'FastText (Preprocessed)': results_ft_prep,
-    'FastText (Raw)': results_ft_raw,
+    'Word2Vec + TF-IDF (Preprocessed)': results_w2v_tfidf_prep,
     'GloVe (Preprocessed)': results_glove_prep,
-    'GloVe (Raw)': results_glove_raw,
-    'BERT (Preprocessed)': results_bert_prep,
+    'GloVe + TF-IDF': results_glove_tfidf_prep,
+    'FastText (Preprocessed)': results_ft_prep,
+    'FastText + TF-IDF (Preprocessed)': results_ft_tfidf_prep,
     'BERT (Raw)': results_bert_raw,
-    'BERT (Fine-tuned)': results_bert_prep,
+    'BERT (Raw) - Fine-tuned': results_bert_ft,
+    'SBERT (Raw)': results_sbert_raw,
+    'SBERT (Raw) - Fine-tuned': results_sbert_ft,
 }
 
-records = []
-for method_name, model_scores in all_results.items():
-    for model_name, metrics in model_scores.items():
-        accuracy = metrics['accuracy']
-        records.append({
-            'Method': method_name,
-            'Model': model_name,
-            'Accuracy': accuracy,
-        })
+best_results = {}
 
-results_df = pd.DataFrame(records)
-accuracy_df = results_df.pivot(index='Method', columns='Model', values='Accuracy')
+print("="*80)
+print("BEST CLASSIFIER FOR EACH METHOD")
+print("="*80)
 
-ordered_methods = [method for method in feature_methods if method in accuracy_df.index]
-if 'BERT (Fine-tuned)' in accuracy_df.index:
-    ordered_methods.append('BERT (Fine-tuned)')
+for method_name, results in all_results.items():
+    best_clf = max(results.items(), key=lambda x: x[1]['accuracy'])
+    best_results[method_name] = {'classifier': best_clf[0], 'accuracy': best_clf[1]['accuracy']}
+    print(f"{method_name:35s} → {best_clf[0]:20s} (Acc: {best_clf[1]['accuracy']:.4f})")
 
-accuracy_df = accuracy_df.reindex(ordered_methods)
-
-accuracy_df
+print("\n" + "="*80)
+print("OVERALL BEST: {:.4f} ({})".format(
+    max(best_results.values(), key=lambda x: x['accuracy'])['accuracy'],
+    max(best_results.items(), key=lambda x: x[1]['accuracy'])[0]
+))
+print("="*80)
 
 
-# In[37]:
+# In[438]:
 
 
-plt.figure(figsize=(11, 6))
-sns.heatmap(
-    accuracy_df,
-    annot=True,
-    fmt='.4f',
-    cmap='RdYlGn',
-    mask=accuracy_df.isna(),
-    cbar_kws={'label': 'Accuracy'},
-    vmin=0.75,
-    vmax=1.00,
-    linewidths=0.5,
-    linecolor='white',
-)
-plt.title('Accuracy: Feature/Model Methods × Classifiers', fontsize=12, fontweight='bold')
-plt.xlabel('Model')
-plt.ylabel('Method')
-plt.tight_layout()
-plt.show()
+import matplotlib.pyplot as plt
+import seaborn as sns
 
+results_df = pd.DataFrame([
+    {'Method': method, 'Accuracy': data['accuracy']} 
+    for method, data in best_results.items()
+]).sort_values('Accuracy', ascending=False)
 
-# In[38]:
+fig, ax = plt.subplots(figsize=(12, 6))
+colors = ['#2ecc71' if x == results_df['Accuracy'].max() else '#3498db' for x in results_df['Accuracy']]
+bars = ax.barh(results_df['Method'], results_df['Accuracy'], color=colors)
+ax.set_xlabel('Accuracy', fontsize=12)
+ax.set_title('Classification Accuracy Comparison (All Methods)', fontsize=14, fontweight='bold')
+ax.set_xlim([0.8, max(results_df['Accuracy']) + 0.01])
 
-
-plt.figure(figsize=(11, 6))
-sns.heatmap(
-    accuracy_df,
-    annot=True,
-    fmt='.4f',
-    cmap='YlGnBu',
-    cbar_kws={'label': 'Accuracy'},
-    vmin=0.70,
-    vmax=1.00,
-    linewidths=0.5,
-    linecolor='white',
-)
-plt.title('Accuracy: Feature/Model Methods × Classifiers', fontsize=12, fontweight='bold')
-plt.xlabel('Model')
-plt.ylabel('Method')
-plt.tight_layout()
-plt.show()
-
-
-# In[39]:
-
-
-top_k = min(15, len(results_df))
-top_results = results_df.nlargest(top_k, 'Accuracy')
-
-plt.figure(figsize=(11, 7))
-sns.barplot(
-    data=top_results,
-    x='Accuracy',
-    y='Method',
-    orient='h',
-    palette='crest',
-)
-plt.title('Top Accuracy Results (Feature/Model Methods × Classifiers)', fontsize=12, fontweight='bold')
-plt.xlabel('Accuracy')
-plt.ylabel('Method | Model')
-plt.xlim(0.70, 1.00)
-plt.tight_layout()
-plt.show()
-
-
-# In[40]:
-
-
-ranking_df = results_df.sort_values(
-    by=['Accuracy'],
-    ascending=False,
- ).reset_index(drop=True)
-
-ranking_df['Rank'] = np.arange(1, len(ranking_df) + 1)
-ranking_df = ranking_df[['Rank', 'Method', 'Model', 'Accuracy']]
-
-ranking_df.head(15)
-
-
-# In[41]:
-
-
-def get_classical_predictions(model_name, X_train_features, X_test_features):
-    if model_name == 'SVM':
-        clf = SVC(kernel='rbf')
-    elif model_name == 'Logistic Regression':
-        clf = LogisticRegression(max_iter=1000)
-    else:
-        clf = KNeighborsClassifier(n_neighbors=5)
-
-    clf.fit(X_train_features, y_train)
-    return clf.predict(X_test_features)
-
-feature_model_map = {
-    'TF-IDF (Preprocessed)': (X_train_tfidf_prep, X_test_tfidf_prep),
-    'TF-IDF (Raw)': (X_train_tfidf_raw, X_test_tfidf_raw),
-    'Word2Vec (Preprocessed)': (X_train_embed_prep, X_test_embed_prep),
-    'Word2Vec (Raw)': (X_train_embed_raw, X_test_embed_raw),
-    'FastText (Preprocessed)': (X_train_embed_ft_prep, X_test_embed_ft_prep),
-    'FastText (Raw)': (X_train_embed_ft_raw, X_test_embed_ft_raw),
-    'GloVe (Preprocessed)': (X_train_glove_prep, X_test_glove_prep),
-    'GloVe (Raw)': (X_train_glove_raw, X_test_glove_raw),
-    'BERT (Preprocessed)': (X_train_embed_bert_prep, X_test_embed_bert_prep),
-    'BERT (Raw)': (X_train_embed_bert_raw, X_test_embed_bert_raw),
-}
-
-top_models = ranking_df.head(4)
-fig, axes = plt.subplots(2, 2, figsize=(14, 12))
-axes = axes.flatten()
-
-for plot_idx, (_, row) in enumerate(top_models.iterrows()):
-    method_name = row['Method']
-    model_name = row['Model']
-    accuracy = row['Accuracy']
-
-    if method_name == 'BERT (Fine-tuned)' and model_name == 'BERT':
-        y_pred = bert_test_preds
-    else:
-        X_train_features, X_test_features = feature_model_map[method_name]
-        y_pred = get_classical_predictions(model_name, X_train_features, X_test_features)
-
-    cm = confusion_matrix(y_test, y_pred, labels=unique_labels)
-
-    sns.heatmap(
-        cm,
-        annot=True,
-        fmt='d',
-        cmap='Blues',
-        ax=axes[plot_idx],
-        xticklabels=unique_labels,
-        yticklabels=unique_labels,
-        cbar=False,
-    )
-    axes[plot_idx].set_title(
-        f"{method_name} + {model_name}\nAcc: {accuracy:.4f}",
-        fontsize=11,
-        fontweight='bold',
-    )
-    axes[plot_idx].set_xlabel('Predicted')
-    axes[plot_idx].set_ylabel('Actual')
-
-for idx in range(len(top_models), len(axes)):
-    axes[idx].axis('off')
+for i, bar in enumerate(bars):
+    width = bar.get_width()
+    ax.text(width + 0.002, bar.get_y() + bar.get_height()/2, 
+            f'{width:.4f}', ha='left', va='center', fontsize=10, fontweight='bold')
 
 plt.tight_layout()
 plt.show()
+
+print("\n" + "="*80)
+print("FINAL ACCURACY RESULTS (Sorted by Performance)")
+print("="*80)
+for idx, row in results_df.iterrows():
+    print(f"{row['Method']:35s} → {row['Accuracy']:.4f}")
+print("="*80)
+
+
+# In[439]:
+
+
+print("\n" + "="*100)
+print("COMPLETE ACCURACY RESULTS SUMMARY")
+print("="*100)
+
+summary_data = [
+    (method, data['accuracy'], data['classifier']) 
+    for method, data in best_results.items()
+]
+
+print(f"\n{'Method':<35} {'Accuracy':<12} {'Best Classifier':<20}")
+print("-"*100)
+
+sorted_results = sorted(summary_data, key=lambda x: x[1], reverse=True)
+for method, accuracy, classifier in sorted_results:
+    marker = " ⭐ BEST" if accuracy == max(x[1] for x in sorted_results) else ""
+    print(f"{method:<35} {accuracy:<12.4f} {classifier:<20}{marker}")
+
+print("\n" + "="*100)
+best_method = max(best_results.items(), key=lambda x: x[1]['accuracy'])
+print(f"BEST OVERALL RESULT: {best_method[0]} achieves {best_method[1]['accuracy']:.4f} accuracy")
+print("="*100)
 
