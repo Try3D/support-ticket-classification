@@ -215,25 +215,8 @@ for text, pattern, label in samples:
     print(f"{label} {'✓' if pattern.search(text) else '✗'}  {text}")
 
 
-# In[11]:
+# In[ ]:
 
-
-ENTITY_TAG_PATTERNS = [
-    ("IP_ADDR",    re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")),
-    ("TICKET_ID",  re.compile(r"\b(?:inc|ticket|case|ref|req)[-_:#\s]*\d{3,}\b", flags=re.IGNORECASE)),
-    ("ORDER_ID",   re.compile(r"\b(?:order|ord)[-_:#\s]*\d{3,}\b", flags=re.IGNORECASE)),
-    ("VERSION",    re.compile(r"\bv\d+(?:\.\d+){1,3}\b", flags=re.IGNORECASE)),
-    ("ERROR_CODE", re.compile(r"\b(?:0x[a-fA-F0-9]{4,}|(?:error|err|errno|exception)[-_:#\s]*[a-z0-9_-]{2,})\b", flags=re.IGNORECASE)),
-    ("LONG_NUM",   re.compile(r"\b\d{6,}\b")),
-]
-
-TOKEN_PATTERN = re.compile(
-    r"(?:https?://\S+|www\.\S+)|"
-    r"(?:[A-Za-z]:\\[^\s]+)|"
-    r"(?:[\w.+-]+@[\w.-]+\.\w+)|"
-    r"(?:\b\w+(?:[._:/\\#@+-]\w+)+\b)|"
-    r"(?:\b\w+\b)"
-)
 
 sample = "Error 0x1234ABCD on ticket INC-5432 from 192.168.1.1, order 98765, v1.2.3"
 for tag, pattern in ENTITY_TAG_PATTERNS:
@@ -1090,7 +1073,7 @@ def extract_bert_features(texts, tokenizer, model, device, batch_size=16, max_le
     return np.array(features)
 
 
-# In[41]:
+# In[53]:
 
 
 print("Extracting BERT features from preprocessed text...")
@@ -1119,7 +1102,7 @@ print(f"BERT (Preprocessed): {X_train_embed_bert_prep.shape} (train), {X_test_em
 print(f"BERT (Raw):         {X_train_embed_bert_raw.shape} (train), {X_test_embed_bert_raw.shape} (test)")
 
 
-# In[42]:
+# In[54]:
 
 
 results_bert_raw = {}
@@ -1139,7 +1122,7 @@ for clf_name, clf in [('SVM', SVC(kernel='rbf')),
     print(f"{clf_name:<25} Accuracy: {accuracy:.4f}")
 
 
-# In[43]:
+# In[55]:
 
 
 clf_bert = SVC(kernel='rbf')
@@ -1150,7 +1133,7 @@ analyze_misclassified("BERT (Raw)", y_pred_bert, x_test, y_test)
 
 # ### 12. Bert Finetuning
 
-# In[44]:
+# In[77]:
 
 
 from torch.utils.data import Dataset, DataLoader
@@ -1281,7 +1264,7 @@ for epoch in range(epochs):
 y_pred_labels = np.array([id_to_label[i] for i in test_preds])
 
 
-# In[51]:
+# In[96]:
 
 
 model.eval()
@@ -1330,7 +1313,7 @@ results_bert_ft = {
 }
 
 
-# In[52]:
+# In[97]:
 
 
 analyze_misclassified(
@@ -1341,7 +1324,7 @@ analyze_misclassified(
 )
 
 
-# In[53]:
+# In[98]:
 
 
 import pandas as pd
@@ -1377,7 +1360,7 @@ print("OVERALL BEST: {:.4f} ({})".format(
 print("="*80)
 
 
-# In[54]:
+# In[99]:
 
 
 import matplotlib.pyplot as plt
@@ -1411,7 +1394,7 @@ for idx, row in results_df.iterrows():
 print("="*80)
 
 
-# In[55]:
+# In[100]:
 
 
 print("\n" + "="*100)
@@ -1437,39 +1420,8 @@ print(f"BEST OVERALL RESULT: {best_method[0]} achieves {best_method[1]['accuracy
 print("="*100)
 
 
-# In[60]:
+# In[ ]:
 
 
-def predict_ticket(text, model, tokenizer, id_to_label, device, max_length=192):
-    model.eval()
 
-    inputs = tokenizer(
-        text,
-        return_tensors='pt',
-        truncation=True,
-        padding=True,
-        max_length=max_length
-    )
-
-    input_ids = inputs['input_ids'].to(device)
-    attention_mask = inputs['attention_mask'].to(device)
-
-    with torch.no_grad():
-        outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-        logits = outputs.logits
-
-    probs = torch.softmax(logits, dim=1).cpu().numpy()[0]
-    pred_id = np.argmax(probs)
-
-    return {
-        "label": id_to_label[pred_id],
-        "confidence": float(probs[pred_id]),
-        "all_probs": {
-            id_to_label[i]: float(probs[i]) for i in range(len(probs))
-        }
-    }
-
-sample = "billing not working"
-
-predict_ticket(sample, model, tokenizer, id_to_label, device)
 
