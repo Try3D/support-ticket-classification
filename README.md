@@ -27,6 +27,6 @@ wordnet_verb.exc                          # WordNet irregular verb forms (2.4K e
 
 ## Dataset
 
-The dataset is available in the /dataset/support-ticket-classification.csv or
+The dataset is available in the `/dataset/support-ticket-classification.csv` or
 can be downloaded from
 [Kaggle](https://www.kaggle.com/datasets/devtry3d/support-ticket-classification).
