@@ -1,5 +1,5 @@
 id,label,subject,text
-1,account_access,Guest access permissions wrong,Guest access isn't respecting the permission levels I set.
+1,account_access,Guest access permisons wrong,Guest access isn't respecting the permission levels I set.
 2,account_access,PIN keeps locking the account after a couple tries,My PIN entry locks the account after only a couple attempts. This seems way too sensitive. I got charged for this month but cant even access the service because the account keeps locking me out.
 3,account_access,Shared account not recommended warning missing,I created a shared account for the team but there was no warning that shared accounts are security risks.
 4,account_access,Payment info required for free account,You're asking for payment information even though I only want the free tier. Why do you need my card?
@@ -14,18 +14,18 @@ id,label,subject,text
 13,account_access,Multiple simultaneous sessions causing conflicts,Multiple concurrent logins cause session conflicts.
 14,account_access,Age verification not working,The verification system keeps rejecting my ID even though its completely valid and up to date. Ive tried submitting it 3 times. I dont understand what the problem is.
 15,account_access,Phone number not updating,I tried to update my phone number for 2FA but the change won't save.
-16,account_access,Session expires immediately after login,Every time I successfully authenticate the system logs me back out within seconds before I can do anything. I have tried clearing cookies and using a different browser but the session still expires instantly. This is happening across all devices I own. I need my account session to stay active long enough for me to use the product.
+16,account_access,Session expires imedately after login,Every time I successfully authenticate the system logs me back out within seconds before I can do anything. I have tried clearing cookies and using a different browser but the session still expires instantly. This is happening across all devices I own. I need my account session to stay active long enough for me to use the product.
 17,account_access,"Password reset email not arriving, can't get back in",I clicked forgot password and submitted my email address but I'm not receiving the reset email. I can't access my account.
 18,account_access,State lost mid-way through sign-in flow,If I navigate away from the entry page during setup the state is completely lost.
 19,account_access,Card declined on renewal now locked out,"My card was declined and immediately my account was locked. I have since updated my payment details and the new card works fine, but the account is still blocked. Please check the billing status and restore access."
 20,account_access,Device trust mechanism missing,Can't mark trusted devices to skip 2FA.
-21,account_access,Password is definitely correct but system wont accept it,I know my password is right. I copied and pasted it from my password manager. The system just rejects it every time. Something on the backend must be broken because my credentials are definitely correct.
-22,account_access,I did NOT forget my password the system just won't accept it,I want to be clear that I have not forgotten my password and I do not need a password reset. The system is simply refusing to accept my correct credentials every single time. I have verified the password in a text editor to confirm there are no typos. Something on the back end is blocking my account access despite my credentials being correct.
+21,account_access,Password is definitely corect but system wont accept it,I know my password is right. I copied and pasted it from my password manager. The system just rejects it every time. Something on the backend must be broken because my credentials are definitely correct.
+22,account_access,I did NOT forget my password the system just wont accept it,I want to be clear that I have not forgotten my password and I do not need a password reset. The system is simply refusing to accept my correct credentials every single time. I have verified the password in a text editor to confirm there are no typos. Something on the back end is blocking my account access despite my credentials being correct.
 23,account_access,Browser not saving my sign-in details,My browser isn't saving my account details even though I have that option enabled.
 24,account_access,Two-factor authentication code not working,I set up 2FA but the app keeps generating invalid codes that your system rejects even though the timing is correct.
-25,account_access,Corporate email not recognized,When I use my company email to sign up you say it's not a valid email format even though it is.
+25,account_access,Corporate email not recognized,When I use my company e-mail to sign up you say it's not a valid email format even though it is.
 26,account_access,Magic link arrives fine but clicking it does nothing,"I requested a magic link, it arrived, I clicked it, and nothing happened. No login, no error, just back to the homepage."
-27,account_access,Session timeout unpredictable,Session timeout happens at random intervals.
+27,account_access,Session timeout unpredictable,Session timeout happens at random intarvals.
 28,account_access,Welcome email had a broken link to get into my account,The welcome email I received had a broken URL for logging in. Clicking it says the page doesn't exist.
 29,account_access,Cancelled subscription but account also got deleted,I only cancelled my plan but somehow my entire account was deleted. I need access restored.
 30,account_access,Unusual sign-in activity from unknown locations,Seeing access activity on my account from locations I've never been. I'm worried someone is in my account and could be changing my payment method or subscription plan.
